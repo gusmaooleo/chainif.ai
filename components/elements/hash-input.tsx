@@ -4,24 +4,29 @@ import Image from "next/image";
 import { Input } from "../ui/input";
 import { FormEvent, useCallback, useMemo, useState } from "react";
 import { generateSHA256, validateSHA256 } from "@/lib/sha-256-utils";
-import { useRouter } from "next/navigation";
+import { redirect } from "next/navigation";
 
 type HashInputProps = {
   urlHash: string;
 };
 
-export default function HashInput({ urlHash }: HashInputProps) {
+export default function HashInput({
+  urlHash,
+}: HashInputProps) {
   const [inputValue, setInputValue] = useState(urlHash);
   const isValidHash = useMemo(() => validateSHA256(inputValue), [inputValue]);
-  const router = useRouter();
 
   const handleSubmit = useCallback(
     (e: FormEvent<HTMLFormElement>) => {
       e.preventDefault();
+      if (!inputValue) {
+        return;
+      }
+
       const hash = isValidHash ? inputValue : generateSHA256(inputValue);
-      router.push(`/${hash}`);
+      redirect(`/${hash}`)
     },
-    [isValidHash, inputValue, router]
+    [isValidHash, inputValue]
   );
 
   return (

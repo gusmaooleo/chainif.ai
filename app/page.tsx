@@ -1,3 +1,3 @@
-import DynamicHashPage from "./[hash]/page";
+import DynamicHashPage from "./[...hash]/page";
 
 export default DynamicHashPage;
