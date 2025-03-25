@@ -1,0 +1,19 @@
+{
+  "name": "arlocal",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "tsx index.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "arlocal": "^1.1.66"
+  },
+  "dependencies": {
+    "tsx": "^4.19.3"
+  }
+}
