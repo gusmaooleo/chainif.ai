@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import LogoHeader from "@/components/elements/logo-header";
 import Footer from "@/components/structures/footer";
 import MainWrapper from "@/components/structures/main";
+import Header from "@/components/structures/header";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -20,7 +20,7 @@ export default function RootLayout({
         className={`antialiased`}
       >
         <div className="min-h-screen flex flex-col">
-          <LogoHeader />
+          <Header />
           <MainWrapper>
             {children}
           </MainWrapper>

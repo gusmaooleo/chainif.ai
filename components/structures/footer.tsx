@@ -3,7 +3,7 @@ import github from '@/public/github-logo.svg';
 import contact from '@/public/contact-me.svg';
 import about from '@/public/about.svg';
 import Link from "next/link";
-import AboutDialogWrapper from "../elements/about-dialog-wrapper";
+import AboutDialogWrapper from "../wrappers/about-dialog-wrapper";
 
 export default function Footer() {
   return (

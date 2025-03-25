@@ -1,22 +1,23 @@
-import Image from "next/image";
-import { Input } from "@/components/ui/input";
+import HashInput from "@/components/elements/hash-input";
+import HashFeedback from "@/components/elements/hash-feedback";
+import { DefaultFeedback } from "@/components/elements/feedback-states";
+import ShowEquivalentHash from "@/components/elements/show-equivalent-hash";
 
-export default function DynamicHashPage({params,}: {params: { hash: string };}) {
-  let hashValue = !!params.hash ? params.hash : "";
+export default async function DynamicHashPage({params}: {params: Promise<{ hash: string }>}) {
+  const { hash } = await params;
+  const hashValue = !!hash ? hash : "";
 
   return (
-    <div className="w-[32vmax]">
-      <div className="flex flex-row">
-        <Input 
-          className="rounded-full border-gray-400 text-sm text-gray-600 placeholder:text-gray-300" 
-          defaultValue={hashValue}
-          placeholder="Paste SHA256 or ai generated content"
-        >
-
-        </Input>
-
-        <Image src={'/svg-logo-bw.svg'} alt="svg-logo" width={22} height={22} className="relative ml-[-2rem]" />
+    <>
+      <div className="flex flex-col h-auto items-center justify-between">
+        <HashFeedback>
+          <DefaultFeedback />
+        </HashFeedback>
+        <div className="w-[32vmax] mb-10">
+          <ShowEquivalentHash hashValue={hashValue} />
+          <HashInput urlHash={hashValue} />
+        </div>
       </div>
-    </div>
+    </>
   );
 }

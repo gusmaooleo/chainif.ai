@@ -8,6 +8,9 @@
   --color-gray-300: #C5CCD6;
   --color-gray-400: #7A8B9A;
   --color-gray-600: #3A404C;
+
+  --color-success: #87F68A;
+  --color-error: #FF6568;
 }
 
 body {
