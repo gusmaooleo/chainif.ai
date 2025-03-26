@@ -11,9 +11,9 @@ import { RootState } from "@/lib/store";
 import OriginDropdownSelector from "./origin-dropdown-selector";
 
 export default function ContentForm() {
-  const dispatch = useDispatch();
   const { inputValue, originValue } = useSelector((state: RootState) => state.form);
   const isValidHash = useMemo(() => validateSHA256(inputValue), [inputValue]);
+  const dispatch = useDispatch();
 
   const handleSubmit = useCallback(
     (e: FormEvent<HTMLFormElement>) => {
@@ -21,10 +21,9 @@ export default function ContentForm() {
       if (!inputValue) {
         return;
       }
-      
-      console.log(originValue.value)
 
-      const hash = isValidHash ? inputValue : generateSHA256(inputValue);
+      const format = `${inputValue} \n//${originValue.value}`;
+      const hash = isValidHash ? inputValue : generateSHA256(format);
       redirect(`/${hash}`);
     },
     [isValidHash, inputValue, originValue]
@@ -36,7 +35,7 @@ export default function ContentForm() {
         <Input
           className="rounded-full text-sm text-gray-600 placeholder:text-gray-300 pr-9"
           value={inputValue}
-          placeholder="Paste SHA256 or ai generated content"
+          placeholder="Paste SHA256, authorial texts or ai generated content"
           onChange={(e) => dispatch(setInputValue(e.target.value))}
         />
         <button type="submit" className="relative ml-[-2rem]">
