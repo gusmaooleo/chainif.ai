@@ -1,6 +1,7 @@
 import HashFetchFeedback from "@/components/elements/hash-fetch-feedback";
 import ShowEquivalentHash from "@/components/elements/show-equivalent-hash";
-import HashInput from "@/components/elements/hash-input";
+import ContentForm from "@/components/elements/content-form";
+import FormProviderWrapper from "@/components/wrappers/form-provider-wrapper";
 import { notFound } from "next/navigation";
 
 type DynamicHashPageType = {
@@ -21,7 +22,9 @@ export default async function DynamicHashPage({params}: DynamicHashPageType) {
       <HashFetchFeedback hash={!!hash ? hash[0] : ""} />
       <div className="w-[32vmax] mb-10">
         <ShowEquivalentHash hashValue={hashValue} />
-        <HashInput />
+        <FormProviderWrapper>
+          <ContentForm />
+        </FormProviderWrapper>
       </div>
     </div>
   );

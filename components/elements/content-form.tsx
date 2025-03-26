@@ -2,15 +2,17 @@
 
 import Image from "next/image";
 import { Input } from "../ui/input";
-import { FormEvent, useCallback, useMemo, useState } from "react";
+import { FormEvent, useCallback, useMemo } from "react";
 import { generateSHA256, validateSHA256 } from "@/lib/sha-256-utils";
 import { redirect } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
+import { setInputValue, setOriginValue } from "@/lib/slices/form-slice";
+import { RootState } from "@/lib/store";
 import OriginDropdownSelector from "./origin-dropdown-selector";
 
-
-export default function HashInput() {
-  const [inputValue, setInputValue] = useState<string>("");
-  const [originValue, setOriginValue] = useState<string>("");
+export default function ContentForm() {
+  const dispatch = useDispatch();
+  const { inputValue, originValue } = useSelector((state: RootState) => state.form);
   const isValidHash = useMemo(() => validateSHA256(inputValue), [inputValue]);
 
   const handleSubmit = useCallback(
@@ -19,9 +21,11 @@ export default function HashInput() {
       if (!inputValue) {
         return;
       }
+      
+      console.log(originValue.value)
 
       const hash = isValidHash ? inputValue : generateSHA256(inputValue);
-      redirect(`/${hash}`)
+      redirect(`/${hash}`);
     },
     [isValidHash, inputValue, originValue]
   );
@@ -33,7 +37,7 @@ export default function HashInput() {
           className="rounded-full text-sm text-gray-600 placeholder:text-gray-300 pr-9"
           value={inputValue}
           placeholder="Paste SHA256 or ai generated content"
-          onChange={(e) => setInputValue(e.target.value)}
+          onChange={(e) => dispatch(setInputValue(e.target.value))}
         />
         <button type="submit" className="relative ml-[-2rem]">
           <Image
@@ -44,7 +48,7 @@ export default function HashInput() {
           />
         </button>
       </div>
-      <OriginDropdownSelector setOrigin={setOriginValue} />
+      <OriginDropdownSelector setOrigin={(value) => dispatch(setOriginValue(value))} />
     </form>
   );
 }

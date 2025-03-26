@@ -11,39 +11,28 @@ import {
 
 import { Button } from "../ui/button";
 import { optionsList } from "@/lib/factories/dropdown-options-factory";
-import { useState } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "@/lib/store";
 import Image from "next/image";
 
 type OriginDropdownSelectorType = {
-  setOrigin: (origin: string) => void;
+  setOrigin: (origin: { icon: string; value: string }) => void;
 };
 
 export default function OriginDropdownSelector({
   setOrigin,
 }: OriginDropdownSelectorType) {
-  const [iconRef, setIconRef] = useState<string>(optionsList.Authorial.icon);
+  const { originValue } = useSelector((state: RootState) => state.form);
 
-  const handleSetOrigin = ({
-    icon,
-    value,
-  }: {
-    icon: string;
-    value: string;
-  }) => {
-    setOrigin(value);
-    setIconRef(icon);
+  const handleSetOrigin = (origin: { icon: string; value: string }) => {
+    setOrigin(origin);
   };
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="outline" className="rounded-full p-2">
-          <Image
-            src={iconRef}
-            alt="selected-icon"
-            height={20}
-            width={20}
-          />
+          <Image src={originValue.icon} alt="selected-icon" height={20} width={20} />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
@@ -66,7 +55,9 @@ export default function OriginDropdownSelector({
           );
         })}
         <DropdownMenuSeparator />
-        <DropdownMenuLabel className="text-gray-600">Select origin</DropdownMenuLabel>
+        <DropdownMenuLabel className="text-gray-600">
+          Select origin
+        </DropdownMenuLabel>
       </DropdownMenuContent>
     </DropdownMenu>
   );
