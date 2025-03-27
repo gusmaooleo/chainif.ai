@@ -44,6 +44,7 @@ export default function ContentForm() {
             alt="svg-logo"
             width={22}
             height={22}
+            className="cursor-pointer"
           />
         </button>
       </div>
