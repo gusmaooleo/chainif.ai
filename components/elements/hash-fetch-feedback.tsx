@@ -1,17 +1,23 @@
+import { FoundFeedback, InvalidFeedback, NotFoundFeedback } from "./feedback-states";
 import { FeedbackType } from "@/types/feedback";
-import DefaultHashContentWrapper from "../wrappers/default-hash-content-wrapper";
-import { DefaultFeedback } from "./feedback-states";
 
-export default async function HashFetchFeedback({hash}: {hash: FeedbackType}) {
-  let children = <DefaultFeedback />
+export default function HashFetchFeedback({feedbackType, hash}: {feedbackType: FeedbackType, hash: string}) {
+  let children: React.ReactNode;
 
-  if (hash) {
-
+  switch(feedbackType) {
+    case 'Found':
+      children = <FoundFeedback hash={hash} />;
+      break;
+    case 'Not-Found':
+      children = <NotFoundFeedback />;
+      break;
+    case 'Invalid':
+      children = <InvalidFeedback />;
+      break; 
+    default:
+      children = <></>;
+      break;
   }
-  
-  return (
-    <DefaultHashContentWrapper>
-      {children}
-    </DefaultHashContentWrapper>
-  );
+
+  return children;
 }

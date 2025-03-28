@@ -2,45 +2,70 @@ import HashFetchFeedback from "@/components/elements/hash-fetch-feedback";
 import ShowEquivalentHash from "@/components/elements/show-equivalent-hash";
 import ContentForm from "@/components/elements/content-form";
 import FormProviderWrapper from "@/components/wrappers/form-provider-wrapper";
+import DefaultHashContentWrapper from "@/components/wrappers/default-hash-content-wrapper";
+import DefaultLoading from "@/components/elements/default-loading";
+import getFeedback from "@/lib/get-feedback";
 import { notFound } from "next/navigation";
-import { validateSHA256 } from "@/lib/sha-256-utils";
-import { searchForHash } from "@/lib/fetch/actions";
-import { FeedbackType } from "@/types/feedback";
+import { Suspense } from "react";
+import { DefaultFeedback } from "@/components/elements/feedback-states";
+import UpComponentForm from "@/components/elements/up-component-form";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 type DynamicHashPageType = {
   params: Promise<{ hash: string[] }>;
 }
 
-export default async function DynamicHashPage({params}: DynamicHashPageType) {
-  const { hash } = await params;
-  const hashValue = !!hash ? hash[0] : "";
-  let feedback: FeedbackType = 'Default';
-
-
-  if (!!hash && hash.length > 1) {
-    notFound();
+async function FeedbackContent({ hashValue }: { hashValue: string }) {
+  if (!hashValue) {
+    return <></>
   }
 
-  if (validateSHA256(hashValue)) {
-    const queryResult = await searchForHash(hashValue);
-    if (!!queryResult && queryResult.edges.length > 0) {
-      feedback = 'Finded';
-    } else {
-      feedback = 'Not-Found';
-    }
-  } else {
-    feedback = 'Invalid'
+  const feedback = await getFeedback(hashValue);
+  return (
+    <>
+      <HashFetchFeedback feedbackType={feedback} hash={hashValue} />
+      {feedback === 'Not-Found' && (
+        <div className="flex flex-row gap-4 mt-10">
+          <Link href="/">
+            <Button variant='outline'>Cancel</Button>
+          </Link>
+          <UpComponentForm>
+            Up to blockchain
+          </UpComponentForm>
+        </div>
+      )}
+    </>
+  );
+}
+
+export default async function DynamicHashPage({ params }: DynamicHashPageType) {
+  const { hash } = await params;
+  const hashValue = hash?.[0] || "";
+
+  if (hash?.length > 1) {
+    notFound();
   }
 
   return (
     <div className="flex flex-col h-auto items-center justify-between">
-      <HashFetchFeedback hash={feedback} />
-      <div className="w-[32vmax] mb-10">
-        <ShowEquivalentHash hashValue={hashValue} />
-        <FormProviderWrapper>
+      {/* not lost SEO advantages */}
+      {!hashValue && (
+        <DefaultHashContentWrapper>
+          <DefaultFeedback />
+        </DefaultHashContentWrapper>
+      )}
+      <FormProviderWrapper>
+        <DefaultHashContentWrapper>
+          <Suspense fallback={<DefaultLoading />}>
+            <FeedbackContent hashValue={hashValue} />
+          </Suspense>
+        </DefaultHashContentWrapper>
+        <div className="w-[32vmax] mb-10">
+          <ShowEquivalentHash hashValue={hashValue} />
           <ContentForm />
-        </FormProviderWrapper>
-      </div>
+        </div>
+      </FormProviderWrapper>
     </div>
   );
 }

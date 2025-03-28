@@ -4,7 +4,7 @@ import Image from "next/image";
 import { Input } from "../ui/input";
 import { FormEvent, useCallback, useMemo } from "react";
 import { generateSHA256, validateSHA256 } from "@/lib/sha-256-utils";
-import { redirect } from "next/navigation";
+import { redirect, useParams } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { setInputValue, setOriginValue } from "@/lib/slices/form-slice";
 import { RootState } from "@/lib/store";
@@ -14,6 +14,7 @@ export default function ContentForm() {
   const { inputValue, originValue } = useSelector((state: RootState) => state.form);
   const isValidHash = useMemo(() => validateSHA256(inputValue), [inputValue]);
   const dispatch = useDispatch();
+  const { hash } = useParams();
 
   const handleSubmit = useCallback(
     (e: FormEvent<HTMLFormElement>) => {
@@ -23,8 +24,12 @@ export default function ContentForm() {
       }
 
       const format = `${inputValue} \n//${originValue.value}`;
-      const hash = isValidHash ? inputValue : generateSHA256(format);
-      redirect(`/${hash}`);
+      const genHash = isValidHash ? inputValue : generateSHA256(format);
+      
+      if (!!hash && (genHash === hash[0])) {
+        return;
+      }
+      redirect(`/${genHash}`);
     },
     [isValidHash, inputValue, originValue]
   );

@@ -5,6 +5,7 @@ import arweave from "../config/arweave";
 
 export async function searchForHash(hash: string): Promise<{ edges: any[] } | undefined> {
   try {
+    await new Promise((response) => setTimeout(response, 1000))
     const { pk } = await getArweaveKey(arweave);
     const fetchResult = await fetchHashData(pk, hash, arweave);
     return fetchResult?.data.data.transactions;
