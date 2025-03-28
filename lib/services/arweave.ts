@@ -10,8 +10,8 @@ declare global {
 
 /**
  * Get Arweave key and public key by the environment "dev" || "test" != "prod".
- * @param instance 
- * @returns 
+ * @param instance
+ * @returns
  */
 export const getArweaveKey = async (
   instance: Arweave
@@ -31,23 +31,25 @@ export const getArweaveKey = async (
   const key = await instance.wallets.generate();
   globalThis.arweaveKey = key;
   globalThis.publicKey = await instance.wallets.jwkToAddress(key);
+  await instance.api.get(`mint/${publicKey}/10000000000000000`);
   return { key: key, pk: publicKey };
 };
 
-
 /**
  * Fetch the provided hash data.
- * @param pk 
- * @param hash 
- * @param instance 
+ * @param pk
+ * @param hash
+ * @param instance
  */
 export const fetchHashData = async (
-  pk: string, hash: string, instance: Arweave
+  pk: string,
+  hash: string,
+  instance: Arweave
 ): Promise<ResponseWithData<any> | undefined> => {
   try {
     const queryObject = {
       query: `{
-        transactions (
+        transactions(
           owners:["${pk}"],
           tags: [
             {
@@ -59,34 +61,55 @@ export const fetchHashData = async (
           edges {
             node {
               id
+              owner {
+                address
+              }
+              tags {
+                name
+                value
+              }
+              block {
+                timestamp
+                height
+              }
+              data {
+                size
+                type
+              }
+              fee {
+                winston
+                ar
+              }
             }
           }
         }
       }`,
     };
 
-    const results = await instance.api.post('/graphql', queryObject);
+    const results = await instance.api.post("/graphql", queryObject);
     return results;
   } catch (error: any) {
-    console.error(error)
+    console.error(error);
   }
 };
 
-
 /**
  * Up the provided hash data to Arweave blockchain using the provided key.
- * @param pk 
- * @param hash 
- * @param instance 
+ * @param pk
+ * @param hash
+ * @param instance
  */
 export const upHashData = async (
-  credentials: ArweaveCredentials, hash: string, instance: Arweave, formData: HashForm
-): Promise<ResponseWithData<any> | undefined> => {
+  credentials: ArweaveCredentials,
+  hash: string,
+  instance: Arweave,
+  formData: HashForm
+): Promise<any> => {
   const mine = () => instance.api.get("mine");
   try {
     let transaction = await instance.createTransaction(
       {
-        data: formData.content
+        data: formData.content,
       },
       credentials.key
     );
@@ -100,14 +123,17 @@ export const upHashData = async (
 
     while (!response.isComplete) {
       await response.uploadChunk();
+      console.log(
+        `uploading chunk: ${response.uploadedChunks}/${response.totalChunks}`
+      );
     }
-    
-    if (process.env.NODE_ENV !== 'production') {
+
+    if (process.env.NODE_ENV !== "production") {
       await mine();
     }
 
-    return await fetchHashData(credentials.pk, hash, instance);
+    return await instance.api.get(`/${transaction.id}`);
   } catch (error: any) {
-    console.error(error)
+    console.error(error);
   }
 };

@@ -12,7 +12,6 @@ type DynamicHashPageType = {
   params: Promise<{ hash: string[] }>;
 }
 
-
 export default async function DynamicHashPage({ params }: DynamicHashPageType) {
   const { hash } = await params;
   const hashValue = hash?.[0] || "";
@@ -23,7 +22,7 @@ export default async function DynamicHashPage({ params }: DynamicHashPageType) {
 
   return (
     <div className="flex flex-col h-auto items-center justify-between">
-      {/* not lost SEO advantages */}
+      {/* does not lost SEO advantages */}
       {!hashValue && (
         <DefaultHashContentWrapper>
           <DefaultFeedback />

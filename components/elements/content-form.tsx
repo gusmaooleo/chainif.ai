@@ -23,9 +23,7 @@ export default function ContentForm() {
         return;
       }
 
-      const format = `${inputValue} \n//${originValue.value}`;
-      const genHash = isValidHash ? inputValue : generateSHA256(format);
-      
+      const genHash = isValidHash ? inputValue : generateSHA256(inputValue);
       if (!!hash && (genHash === hash[0])) {
         return;
       }

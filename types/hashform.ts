@@ -1,4 +1,4 @@
 export interface HashForm {
-  content: any;
+  content: string;
   author: string;
 }

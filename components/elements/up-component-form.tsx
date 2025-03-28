@@ -12,12 +12,18 @@ import {
 } from "@/components/ui/dialog";
 import { RootState } from "@/lib/store";
 import { useDispatch, useSelector } from "react-redux";
-import { setInputValue, setOriginValue, setAuthorValue } from "@/lib/slices/form-slice";
+import {
+  setInputValue,
+  setOriginValue,
+  setAuthorValue,
+} from "@/lib/slices/form-slice";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
 import { FormEvent } from "react";
+import { optionsList } from "@/lib/factories/dropdown-options-factory";
 import OriginDropdownSelector from "./origin-dropdown-selector";
+import { upHashToChain } from "@/lib/fetch/actions";
 
 export default function UpComponentForm({ children }: React.PropsWithChildren) {
   const { inputValue, originValue, authorValue } = useSelector(
@@ -25,11 +31,17 @@ export default function UpComponentForm({ children }: React.PropsWithChildren) {
   );
   const dispatch = useDispatch();
 
-  const handleSubmit = (e: FormEvent) => {
+  // TODO: hash must be generated on server and client side.
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    
-    console.log(inputValue, originValue, authorValue);
-  }
+    let author: string = authorValue;
+    if (originValue.value !== optionsList.Authorial.value) {
+      author = originValue.value;
+    }
+
+    const data = await upHashToChain({ content: inputValue, author: author });
+    console.log(data);
+  };
 
   return (
     <Dialog>
@@ -46,6 +58,7 @@ export default function UpComponentForm({ children }: React.PropsWithChildren) {
               placeholder="Insert the author name"
               className="rounded-full text-sm text-gray-600 placeholder:text-gray-300"
               onChange={(e) => dispatch(setAuthorValue(e.target.value))}
+              disabled={originValue.value !== optionsList.Authorial.value}
               required
             />
             <OriginDropdownSelector
