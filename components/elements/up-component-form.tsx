@@ -17,12 +17,18 @@ import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import OriginDropdownSelector from "./origin-dropdown-selector";
 import { Button } from "../ui/button";
+import { FormEvent } from "react";
 
 export default function UpComponentForm({ children }: React.PropsWithChildren) {
   const { inputValue, originValue } = useSelector(
     (state: RootState) => state.form
   );
   const dispatch = useDispatch();
+
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    console.log(inputValue, originValue);
+  }
 
   return (
     <Dialog>
@@ -33,7 +39,7 @@ export default function UpComponentForm({ children }: React.PropsWithChildren) {
         <DialogHeader>
           <DialogTitle>Register data on blockchain</DialogTitle>
         </DialogHeader>
-        <div className="flex flex-col w-full gap-4">
+        <form className="flex flex-col w-full gap-4" onSubmit={handleSubmit}>
           <div className="flex flex-row w-full gap-4">
             <Input
               placeholder="Insert the author name"
@@ -49,16 +55,17 @@ export default function UpComponentForm({ children }: React.PropsWithChildren) {
             placeholder="Registered content"
             className="text-sm text-gray-600 placeholder:text-gray-300 min-h-[200px]"
             onChange={(e) => dispatch(setInputValue(e.target.value))}
+            required
           />
-        </div>
-        <DialogFooter>
-          <DialogClose asChild>
-            <Button type="button" variant="outline">
-              Close
-            </Button>
-          </DialogClose>
-          <Button>Submit</Button>
-        </DialogFooter>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button type="button" variant="outline">
+                Close
+              </Button>
+            </DialogClose>
+            <Button type="submit">Submit</Button>
+          </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   );

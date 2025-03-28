@@ -28,7 +28,7 @@ async function FeedbackContent({ hashValue }: { hashValue: string }) {
       {feedback === 'Not-Found' && (
         <div className="flex flex-row gap-4 mt-10">
           <Link href="/">
-            <Button variant='outline'>Cancel</Button>
+            <Button variant='outline' className="text-gray-600">Cancel</Button>
           </Link>
           <UpComponentForm>
             Up to blockchain
