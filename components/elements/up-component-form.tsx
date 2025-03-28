@@ -12,22 +12,23 @@ import {
 } from "@/components/ui/dialog";
 import { RootState } from "@/lib/store";
 import { useDispatch, useSelector } from "react-redux";
-import { setInputValue, setOriginValue } from "@/lib/slices/form-slice";
+import { setInputValue, setOriginValue, setAuthorValue } from "@/lib/slices/form-slice";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
-import OriginDropdownSelector from "./origin-dropdown-selector";
 import { Button } from "../ui/button";
 import { FormEvent } from "react";
+import OriginDropdownSelector from "./origin-dropdown-selector";
 
 export default function UpComponentForm({ children }: React.PropsWithChildren) {
-  const { inputValue, originValue } = useSelector(
+  const { inputValue, originValue, authorValue } = useSelector(
     (state: RootState) => state.form
   );
   const dispatch = useDispatch();
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    console.log(inputValue, originValue);
+    
+    console.log(inputValue, originValue, authorValue);
   }
 
   return (
@@ -44,6 +45,7 @@ export default function UpComponentForm({ children }: React.PropsWithChildren) {
             <Input
               placeholder="Insert the author name"
               className="rounded-full text-sm text-gray-600 placeholder:text-gray-300"
+              onChange={(e) => dispatch(setAuthorValue(e.target.value))}
               required
             />
             <OriginDropdownSelector
@@ -53,7 +55,7 @@ export default function UpComponentForm({ children }: React.PropsWithChildren) {
           <Textarea
             defaultValue={inputValue}
             placeholder="Registered content"
-            className="text-sm text-gray-600 placeholder:text-gray-300 min-h-[200px]"
+            className="text-sm text-gray-600 placeholder:text-gray-300 min-h-[200px] max-h-[500px]"
             onChange={(e) => dispatch(setInputValue(e.target.value))}
             required
           />

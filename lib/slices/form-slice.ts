@@ -8,11 +8,13 @@ interface Origin {
 
 interface FormState {
   inputValue: string;
+  authorValue: string;
   originValue: Origin;
 }
 
 const initialState: FormState = {
   inputValue: "",
+  authorValue: "",
   originValue: optionsList.Authorial,
 };
 
@@ -23,15 +25,19 @@ export const formSlice = createSlice({
     setInputValue: (state, action: PayloadAction<string>) => {
       state.inputValue = action.payload;
     },
+    setAuthorValue: (state, action: PayloadAction<string>) => {
+      state.authorValue = action.payload;
+    },
     setOriginValue: (state, action: PayloadAction<Origin>) => {
       state.originValue = action.payload;
     },
     clearForm: (state) => {
       state.inputValue = "";
+      state.authorValue = "";
       state.originValue = optionsList.Authorial;
     },
   },
 });
 
-export const { setInputValue, setOriginValue, clearForm } = formSlice.actions;
+export const { setInputValue, setOriginValue, setAuthorValue, clearForm } = formSlice.actions;
 export default formSlice.reducer;

@@ -1,6 +1,8 @@
 "use server";
 
-import { fetchHashData, getArweaveKey } from "../services/arweave";
+import { fetchHashData, getArweaveKey, upHashData } from "../services/arweave";
+import { HashForm } from "@/types/hashform";
+import { generateSHA256 } from "../sha-256-utils";
 import arweave from "../config/arweave";
 
 export async function searchForHash(hash: string): Promise<{ edges: any[] } | undefined> {
@@ -14,12 +16,13 @@ export async function searchForHash(hash: string): Promise<{ edges: any[] } | un
   }
 }
 
-export async function upHashToChain(hash: string) {
+export async function upHashToChain(formData: HashForm): Promise<{ edges: any[] } | undefined> {
   try {
-    const { key, pk } = await getArweaveKey(arweave);
-
-
-  } catch (error) {
+    const credentials = await getArweaveKey(arweave);
+    const hash = generateSHA256(formData.content);
+    const fetchResult = await upHashData(credentials, hash, arweave, formData);
+    return fetchResult?.data.data.transactions;
+  } catch (error: any) {
     console.error(error);
   }
 }

@@ -1,12 +1,12 @@
-import Arweave from "arweave";
+import { ArweaveCredentials } from "@/types/arweave-credentials";
+import { HashForm } from "@/types/hashform";
 import { ResponseWithData } from "arweave/node/lib/api";
-import { JWKInterface } from "arweave/node/lib/wallet";
+import Arweave from "arweave";
 
 declare global {
   var arweaveKey: any;
   var publicKey: any;
 }
-
 
 /**
  * Get Arweave key and public key by the environment "dev" || "test" != "prod".
@@ -15,7 +15,7 @@ declare global {
  */
 export const getArweaveKey = async (
   instance: Arweave
-): Promise<{ key: JWKInterface; pk: string }> => {
+): Promise<ArweaveCredentials> => {
   if (process.env.NODE_ENV === "production") {
     if (!process.env.ARWEAVE_KEY || !process.env.ARWEAVE_PKEY)
       throw new Error("ARWEAVE_KEY not provided.");
@@ -80,12 +80,33 @@ export const fetchHashData = async (
  * @param instance 
  */
 export const upHashData = async (
-  pk: string, hash: string, instance: Arweave
+  credentials: ArweaveCredentials, hash: string, instance: Arweave, formData: HashForm
 ): Promise<ResponseWithData<any> | undefined> => {
+  const mine = () => instance.api.get("mine");
   try {
+    let transaction = await instance.createTransaction(
+      {
+        data: formData.content
+      },
+      credentials.key
+    );
+
+    transaction.addTag("Content-Type", "text/plain");
+    transaction.addTag("Author", formData.author);
+    transaction.addTag("Hash", hash);
+
+    await instance.transactions.sign(transaction, credentials.key);
+    let response = await instance.transactions.getUploader(transaction);
+
+    while (!response.isComplete) {
+      await response.uploadChunk();
+    }
     
-    
-    return;
+    if (process.env.NODE_ENV !== 'production') {
+      await mine();
+    }
+
+    return await fetchHashData(credentials.pk, hash, instance);
   } catch (error: any) {
     console.error(error)
   }

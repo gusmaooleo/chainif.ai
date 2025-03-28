@@ -1,43 +1,17 @@
-import HashFetchFeedback from "@/components/elements/hash-fetch-feedback";
 import ShowEquivalentHash from "@/components/elements/show-equivalent-hash";
 import ContentForm from "@/components/elements/content-form";
 import FormProviderWrapper from "@/components/wrappers/form-provider-wrapper";
 import DefaultHashContentWrapper from "@/components/wrappers/default-hash-content-wrapper";
 import DefaultLoading from "@/components/elements/default-loading";
-import getFeedback from "@/lib/get-feedback";
+import FeedbackContent from "@/components/elements/feedback-content";
+import { DefaultFeedback } from "@/components/elements/feedback-states";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import { DefaultFeedback } from "@/components/elements/feedback-states";
-import UpComponentForm from "@/components/elements/up-component-form";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
 
 type DynamicHashPageType = {
   params: Promise<{ hash: string[] }>;
 }
 
-async function FeedbackContent({ hashValue }: { hashValue: string }) {
-  if (!hashValue) {
-    return <></>
-  }
-
-  const feedback = await getFeedback(hashValue);
-  return (
-    <>
-      <HashFetchFeedback feedbackType={feedback} hash={hashValue} />
-      {feedback === 'Not-Found' && (
-        <div className="flex flex-row gap-4 mt-10">
-          <Link href="/">
-            <Button variant='outline' className="text-gray-600">Cancel</Button>
-          </Link>
-          <UpComponentForm>
-            Up to blockchain
-          </UpComponentForm>
-        </div>
-      )}
-    </>
-  );
-}
 
 export default async function DynamicHashPage({ params }: DynamicHashPageType) {
   const { hash } = await params;
