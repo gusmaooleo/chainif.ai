@@ -1,139 +1,157 @@
 import { ArweaveCredentials } from "@/types/arweave-credentials";
 import { HashForm } from "@/types/hashform";
 import { ResponseWithData } from "arweave/node/lib/api";
+import { TransactionUploader } from "arweave/node/lib/transaction-uploader";
+import { generateSHA256 } from "../sha-256-utils";
+import { hashFormSchema } from "../validation/hashform";
 import Arweave from "arweave";
+import * as yup from 'yup';
+import Transaction from "arweave/node/lib/transaction";
 
 declare global {
   var arweaveKey: any;
   var publicKey: any;
 }
 
-/**
- * Get Arweave key and public key by the environment "dev" || "test" != "prod".
- * @param instance
- * @returns
- */
-export const getArweaveKey = async (
-  instance: Arweave
-): Promise<ArweaveCredentials> => {
-  if (process.env.NODE_ENV === "production") {
-    if (!process.env.ARWEAVE_KEY || !process.env.ARWEAVE_PKEY)
-      throw new Error("ARWEAVE_KEY not provided.");
-    return {
-      key: JSON.parse(process.env.ARWEAVE_KEY),
-      pk: process.env.ARWEAVE_PKEY,
-    };
-  }
 
-  if (globalThis.arweaveKey && globalThis.publicKey)
-    return { key: globalThis.arweaveKey, pk: globalThis.publicKey };
+export class ArweaveService {
+  constructor(private instance: Arweave) {}
 
-  const key = await instance.wallets.generate();
-  globalThis.arweaveKey = key;
-  globalThis.publicKey = await instance.wallets.jwkToAddress(key);
-  await instance.api.get(`mint/${publicKey}/10000000000000000`);
-  return { key: key, pk: publicKey };
-};
+  /**
+   * Get Arweave key and public key by the environment "dev" || "test" != "prod".
+   * @param instance
+   * @returns
+   */
+  getArweaveKey = async (): Promise<ArweaveCredentials> => {
+    if (process.env.NODE_ENV === "production") {
+      if (!process.env.ARWEAVE_KEY || !process.env.ARWEAVE_PKEY)
+        throw new Error("Fatal: ARWEAVE_KEY not provided.");
+      return {
+        key: JSON.parse(process.env.ARWEAVE_KEY),
+        pk: process.env.ARWEAVE_PKEY,
+      };
+    }
 
-/**
- * Fetch the provided hash data.
- * @param pk
- * @param hash
- * @param instance
- */
-export const fetchHashData = async (
-  pk: string,
-  hash: string,
-  instance: Arweave
-): Promise<ResponseWithData<any> | undefined> => {
-  try {
-    const queryObject = {
-      query: `{
-        transactions(
-          owners:["${pk}"],
-          tags: [
-            {
-              name: "Hash",
-              values: ["${hash}"]
+    if (globalThis.arweaveKey && globalThis.publicKey)
+      return { key: globalThis.arweaveKey, pk: globalThis.publicKey };
+
+    const key = await this.instance.wallets.generate();
+    globalThis.arweaveKey = key;
+    globalThis.publicKey = await this.instance.wallets.jwkToAddress(key);
+    await this.instance.api.get(`mint/${publicKey}/10000000000000000`);
+    return { key: key, pk: publicKey };
+  };
+
+  /**
+   * Fetch the provided hash data.
+   * @param pk
+   * @param hash
+   * @param instance
+   */
+  searchForHash = async (
+    hash: string
+  ): Promise<any[] | undefined> => {
+    try {
+      const { pk } = await this.getArweaveKey();
+      const queryObject = {
+        query: `{
+            transactions(
+              owners:["${pk}"],
+              tags: [
+                {
+                  name: "Hash",
+                  values: ["${hash}"]
+                }
+              ]
+            ) {
+              edges {
+                node {
+                  id
+                  owner {
+                    address
+                  }
+                  tags {
+                    name
+                    value
+                  }
+                  block {
+                    timestamp
+                    height
+                  }
+                  data {
+                    size
+                    type
+                  }
+                  fee {
+                    winston
+                    ar
+                  }
+                }
+              }
             }
-          ]
-        ) {
-          edges {
-            node {
-              id
-              owner {
-                address
-              }
-              tags {
-                name
-                value
-              }
-              block {
-                timestamp
-                height
-              }
-              data {
-                size
-                type
-              }
-              fee {
-                winston
-                ar
-              }
-            }
-          }
-        }
-      }`,
-    };
+          }`,
+      };
 
-    const results = await instance.api.post("/graphql", queryObject);
-    return results;
-  } catch (error: any) {
-    console.error(error);
-  }
-};
+      const results = await this.instance.api.post("/graphql", queryObject);
+      return results.data.data.transactions.edges;
+    } catch (error: any) {
+      console.error(error);
+    }
+  };
 
-/**
- * Up the provided hash data to Arweave blockchain using the provided key.
- * @param pk
- * @param hash
- * @param instance
- */
-export const upHashData = async (
-  credentials: ArweaveCredentials,
-  hash: string,
-  instance: Arweave,
-  formData: HashForm
-): Promise<any> => {
-  const mine = () => instance.api.get("mine");
-  try {
-    let transaction = await instance.createTransaction(
-      {
-        data: formData.content,
-      },
-      credentials.key
-    );
+  createTransaction = async (formData: HashForm, hash: string): Promise<{uploader: TransactionUploader, transaction: Transaction} | Error> => {    
+    try {
+      await hashFormSchema.validate(formData);
+      
+      const { key } = await this.getArweaveKey();
 
-    transaction.addTag("Content-Type", "text/plain");
-    transaction.addTag("Author", formData.author);
-    transaction.addTag("Hash", hash);
-
-    await instance.transactions.sign(transaction, credentials.key);
-    let response = await instance.transactions.getUploader(transaction);
-
-    while (!response.isComplete) {
-      await response.uploadChunk();
-      console.log(
-        `uploading chunk: ${response.uploadedChunks}/${response.totalChunks}`
+      let transaction = await this.instance.createTransaction(
+        {
+          data: formData.content,
+        },
+        key
       );
-    }
 
-    if (process.env.NODE_ENV !== "production") {
-      await mine();
-    }
+      transaction.addTag("Content-Type", "text/plain");
+      transaction.addTag("Author", formData.author);
+      transaction.addTag("Hash", hash);
 
-    return await instance.api.get(`/${transaction.id}`);
-  } catch (error: any) {
-    console.error(error);
+      await this.instance.transactions.sign(transaction, key);
+      const uploader = await this.instance.transactions.getUploader(transaction);
+
+      return { uploader: uploader, transaction: transaction };
+    } catch (error: any) {
+      return error;
+    }
   }
-};
+
+  /**
+   * Up the provided hash data to Arweave blockchain using the provided key.
+   * @param pk
+   * @param hash
+   * @param instance
+   */
+  upHashData = async (
+    transaction: Transaction,
+    uploader: TransactionUploader
+  ): Promise<any> => {
+    const mine = () => this.instance.api.get("mine");
+
+    try {
+      while (!uploader.isComplete) {
+        await uploader.uploadChunk();
+        console.log(
+          `uploading chunk: ${uploader.uploadedChunks}/${uploader.totalChunks}`
+        );
+      }
+
+      if (process.env.NODE_ENV !== "production") {
+        await mine();
+      }
+
+      return await this.instance.api.get(`/${transaction.id}`);
+    } catch (error: any) {
+      console.error(error);
+    }
+  };
+}

@@ -10,7 +10,7 @@ import { Suspense } from "react";
 
 type DynamicHashPageType = {
   params: Promise<{ hash: string[] }>;
-}
+};
 
 export default async function DynamicHashPage({ params }: DynamicHashPageType) {
   const { hash } = await params;
@@ -24,15 +24,15 @@ export default async function DynamicHashPage({ params }: DynamicHashPageType) {
     <div className="flex flex-col h-auto items-center justify-between">
       {/* does not lost SEO advantages */}
       {!hashValue && (
-        <DefaultHashContentWrapper>
-          <DefaultFeedback />
-        </DefaultHashContentWrapper>
+        <div className="flex items-center w-screen flex-col h-full w-[30rem]">
+          <div className="flex flex-col items-center h-full">
+            <DefaultFeedback />
+          </div>
+        </div>
       )}
       <FormProviderWrapper>
         <DefaultHashContentWrapper>
-          <Suspense fallback={<DefaultLoading />}>
-            <FeedbackContent hashValue={hashValue} />
-          </Suspense>
+          <FeedbackContent hashValue={hashValue} />
         </DefaultHashContentWrapper>
         <div className="w-[32vmax] mb-10">
           <ShowEquivalentHash hashValue={hashValue} />

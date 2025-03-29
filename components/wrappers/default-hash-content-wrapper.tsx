@@ -1,8 +1,24 @@
+"use client";
+
+import { RootState } from "@/lib/store";
+import { useSelector } from "react-redux";
+import DefaultLoading from "../elements/default-loading";
+
 export default function DefaultHashContentWrapper({children}: React.PropsWithChildren) {  
+  let content = children;
+
+  const { feedbackValue } = useSelector(
+    (state: RootState) => state.form
+  );
+
+  if (feedbackValue === 'Fetching') {
+    content = <DefaultLoading />
+  }
+  
   return (
     <div className="flex items-center w-screen flex-col h-full w-[30rem]">
       <div className="flex flex-col items-center h-full">
-        {children}
+        {content}
       </div>
     </div>
   );

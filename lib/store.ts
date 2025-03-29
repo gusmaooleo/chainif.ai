@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
 import formReducer from './slices/form-slice';
+import sseReducer from './slices/sse-slice';
 
 export const store = configureStore({
   reducer: {
     form: formReducer,
+    sse: sseReducer,
   },
 });
 

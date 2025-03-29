@@ -16,6 +16,7 @@ import {
   setInputValue,
   setOriginValue,
   setAuthorValue,
+  setFeedbackValue,
 } from "@/lib/slices/form-slice";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
@@ -23,24 +24,65 @@ import { Button } from "../ui/button";
 import { FormEvent } from "react";
 import { optionsList } from "@/lib/factories/dropdown-options-factory";
 import OriginDropdownSelector from "./origin-dropdown-selector";
-import { upHashToChain } from "@/lib/fetch/actions";
+import { generateSHA256 } from "@/lib/sha-256-utils";
+import { useRouter } from "next/navigation";
+import { setSSEEvent } from "@/lib/slices/sse-slice";
 
 export default function UpComponentForm({ children }: React.PropsWithChildren) {
   const { inputValue, originValue, authorValue } = useSelector(
     (state: RootState) => state.form
   );
   const dispatch = useDispatch();
+  const router = useRouter();
 
   // TODO: hash must be generated on server and client side.
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    let author: string = authorValue;
-    if (originValue.value !== optionsList.Authorial.value) {
-      author = originValue.value;
-    }
 
-    const data = await upHashToChain({ content: inputValue, author: author });
-    console.log(data);
+    dispatch(setFeedbackValue('Fetching'));
+    const author = originValue.value !== optionsList.Authorial.value ? originValue.value : authorValue;
+    const content = inputValue;
+
+    // Gerar hash no client-side
+    const hash = await generateSHA256(content);
+    
+    // Forçar o Suspense a mostrar o fallback
+    router.push(`/${hash}`); // Navegação otimista
+
+    try {
+      const response = await fetch('/api/upData', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content, author }),
+      });
+
+      if (!response.body) throw new Error('Sem corpo de resposta');
+      
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        
+        const chunk = decoder.decode(value);
+        const events = chunk.split('\n\n').filter(Boolean);
+        
+        for (const event of events) {
+          const lines = event.split('\n');
+          const type = lines.find(l => l.startsWith('event:'))?.split(': ')[1]!;
+          const data = JSON.parse(lines.find(l => l.startsWith('data:'))?.split(': ')[1] || '{}');
+          
+          dispatch(setSSEEvent({ type, data })); // Atualiza o Redux
+          console.log(data);
+        }
+      }
+      dispatch(setFeedbackValue('Found'));
+      
+      router.refresh(); // Forçar revalidação após sucesso
+    } catch (error) {
+      dispatch(setSSEEvent({ type: 'error', data: { error: 'Falha no upload' } }));
+    }
   };
 
   return (

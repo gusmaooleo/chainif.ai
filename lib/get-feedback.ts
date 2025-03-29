@@ -6,5 +6,5 @@ export default async function getFeedback(hashValue: string): Promise<FeedbackTy
   if (!validateSHA256(hashValue)) return 'Invalid';
   
   const queryResult = await searchForHash(hashValue);
-  return !!queryResult && (queryResult?.edges?.length > 0) ? 'Found' : 'Not-Found';
+  return !!queryResult && (queryResult?.length > 0) ? 'Found' : 'Not-Found';
 }
