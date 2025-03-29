@@ -1,8 +1,11 @@
+import { SSEEventType, SSEEventData } from "@/types/sseevent";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+
+
 type SSEState = {
-  eventType: string | null;
-  eventData: any;
+  eventType: SSEEventType | null;
+  eventData: SSEEventData | null;
 };
 
 const initialState: SSEState = {
@@ -14,7 +17,7 @@ export const sseSlice = createSlice({
   name: "sse",
   initialState,
   reducers: {
-    setSSEEvent: (state, action: PayloadAction<{ type: string | null; data: any }>) => {
+    setSSEEvent: (state, action: PayloadAction<{ type: SSEEventType | null; data: SSEEventData }>) => {
       state.eventType = action.payload.type;
       state.eventData = action.payload.data;
     },

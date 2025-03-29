@@ -27,6 +27,7 @@ import { generateSHA256 } from "@/lib/sha-256-utils";
 import { useRouter } from "next/navigation";
 import { setSSEEvent } from "@/lib/slices/sse-slice";
 import OriginDropdownSelector from "../ui-elements/origin-dropdown-selector";
+import { SSEEventData, SSEEventType } from "@/types/sseevent";
 
 export default function UpDataForm({ children }: React.PropsWithChildren) {
   const { inputValue, originValue, authorValue } = useSelector(
@@ -46,7 +47,7 @@ export default function UpDataForm({ children }: React.PropsWithChildren) {
     const hash = await generateSHA256(content);
     
     router.push(`/${hash}`);
-
+    
     try {
       const response = await fetch('/api/upload', {
         method: 'POST',
@@ -68,15 +69,14 @@ export default function UpDataForm({ children }: React.PropsWithChildren) {
         
         for (const event of events) {
           const lines = event.split('\n');
-          const type = lines.find(l => l.startsWith('event:'))?.split(': ')[1]!;
-          const data = JSON.parse(lines.find(l => l.startsWith('data:'))?.split(': ')[1] || '{}');
+          const type = lines.find(l => l.startsWith('event:'))?.split(': ')[1]! as SSEEventType;
+          const data = JSON.parse(lines.find(l => l.startsWith('data:'))?.split(': ')[1] || '{}') as SSEEventData;
           
           dispatch(setSSEEvent({ type, data }));
           console.log(data);
         }
       }
       dispatch(setFeedbackValue('Found'));
-      
       router.refresh();
     } catch (error) {
       dispatch(setSSEEvent({ type: 'error', data: { error: 'Upload failture.' } }));
@@ -119,7 +119,9 @@ export default function UpDataForm({ children }: React.PropsWithChildren) {
                 Close
               </Button>
             </DialogClose>
-            <Button type="submit">Submit</Button>
+            <Button type="submit">
+              Submit
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

@@ -7,7 +7,6 @@ import DefaultLoading from "../loading/default-loading";
 export default function ContentWrapper({children}: React.PropsWithChildren) {  
   let content = children;
 
-  // TODO: armengue do caraio kkkkkkkkkkkkkkkkkkkkkkkkkk
   const { feedbackValue } = useSelector(
     (state: RootState) => state.form
   );

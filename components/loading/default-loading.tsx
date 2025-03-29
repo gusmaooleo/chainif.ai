@@ -4,13 +4,13 @@ import { useSelector } from "react-redux";
 import { Spinner } from "../ui/spinner";
 import { RootState } from "@/lib/store";
 
-export default function DefaultLoading() {
-  const { eventType, eventData } = useSelector((state: RootState) => state.sse);
+export default function DefaultLoading({text}: {text?: string}) {
+  const { eventData } = useSelector((state: RootState) => state.sse);
   
   return (
     <div className="flex flex-col gap-4 w-[20rem] mt-30">
       <Spinner size={"ultralarge"} className="text-gray-600" />
-      <p className="text-center text-gray-600">{!eventData ? "Searching your data on Arweave blockchain." : eventData.message}</p>
+      <p className="text-center text-gray-600">{text ? text : !!eventData ? eventData.message : text}</p>
     </div>
   )
 }
