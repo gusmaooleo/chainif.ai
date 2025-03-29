@@ -1,12 +1,10 @@
-import ShowEquivalentHash from "@/components/elements/show-equivalent-hash";
-import ContentForm from "@/components/elements/content-form";
+import ShowEquivalentHash from "@/components/ui-elements/show-equivalent-hash";
+import SearchingForm from "@/components/forms/searching-form";
 import FormProviderWrapper from "@/components/wrappers/form-provider-wrapper";
 import DefaultHashContentWrapper from "@/components/wrappers/default-hash-content-wrapper";
-import DefaultLoading from "@/components/elements/default-loading";
-import FeedbackContent from "@/components/elements/feedback-content";
-import { DefaultFeedback } from "@/components/elements/feedback-states";
+import FeedbackContent from "@/components/feedback/feedback-content";
+import { DefaultFeedback } from "@/components/feedback/feedback-states";
 import { notFound } from "next/navigation";
-import { Suspense } from "react";
 
 type DynamicHashPageType = {
   params: Promise<{ hash: string[] }>;
@@ -36,7 +34,7 @@ export default async function DynamicHashPage({ params }: DynamicHashPageType) {
         </DefaultHashContentWrapper>
         <div className="w-[32vmax] mb-10">
           <ShowEquivalentHash hashValue={hashValue} />
-          <ContentForm />
+          <SearchingForm />
         </div>
       </FormProviderWrapper>
     </div>

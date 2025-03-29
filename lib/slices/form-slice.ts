@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { optionsList } from "../factories/dropdown-options-factory";
+import { optionsList } from "../constants/originOptions";
 import { FeedbackType } from "@/types/feedback";
 
 interface Origin {

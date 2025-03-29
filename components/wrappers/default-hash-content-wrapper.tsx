@@ -2,11 +2,12 @@
 
 import { RootState } from "@/lib/store";
 import { useSelector } from "react-redux";
-import DefaultLoading from "../elements/default-loading";
+import DefaultLoading from "../loading/default-loading";
 
 export default function DefaultHashContentWrapper({children}: React.PropsWithChildren) {  
   let content = children;
 
+  // TODO: armengue do caraio kkkkkkkkkkkkkkkkkkkkkkkkkk
   const { feedbackValue } = useSelector(
     (state: RootState) => state.form
   );

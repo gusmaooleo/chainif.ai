@@ -1,20 +1,21 @@
 "use client";
 
-import getFeedback from "@/lib/get-feedback";
-import HashFetchFeedback from "./hash-fetch-feedback";
+import getFeedback from "./actions/actions";
 import Link from "next/link";
-import UpComponentForm from "./up-component-form";
+import UpDataForm from "../forms/up-data-form";
 import { Button } from "../ui/button";
 import { useEffect, useState } from "react";
 import { FeedbackType } from "@/types/feedback";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
 import { setFeedbackValue } from "@/lib/slices/form-slice";
-import DefaultLoading from "./default-loading";
+import DefaultLoading from "../loading/default-loading";
+import { FoundFeedback, InvalidFeedback, NotFoundFeedback } from "./feedback-states";
 
 export default function FeedbackContent({ hashValue }: { hashValue: string }) {
   const [feedback, setFeedback] = useState<FeedbackType>('Default');
   const [loading, setLoading] = useState<boolean>(false);
+  let feedbackComponent: React.ReactNode;
 
   const { feedbackValue } = useSelector(
     (state: RootState) => state.form
@@ -41,17 +42,34 @@ export default function FeedbackContent({ hashValue }: { hashValue: string }) {
     return <></>
   }
 
+
+  switch(feedback) {
+    case 'Found':
+      feedbackComponent = <FoundFeedback hash={hashValue} />;
+      break;
+    case 'Not-Found':
+      feedbackComponent = <NotFoundFeedback />;
+      break;
+    case 'Invalid':
+      feedbackComponent = <InvalidFeedback />;
+      break; 
+    default:
+      feedbackComponent = <></>;
+      break;
+  }
+
+
   const defaultData = (
     <>
-      <HashFetchFeedback feedbackType={feedback} hash={hashValue} />
+      {feedbackComponent}
       {feedback === 'Not-Found' && (
         <div className="flex flex-row gap-4 mt-10">
           <Link href="/">
             <Button variant='outline' className="text-gray-600 cursor-pointer">Cancel</Button>
           </Link>
-          <UpComponentForm>
+          <UpDataForm>
             Up to blockchain
-          </UpComponentForm>
+          </UpDataForm>
         </div>
       )}
     </>

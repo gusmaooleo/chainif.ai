@@ -1,12 +1,9 @@
 import { ArweaveCredentials } from "@/types/arweave-credentials";
 import { HashForm } from "@/types/hashform";
-import { ResponseWithData } from "arweave/node/lib/api";
 import { TransactionUploader } from "arweave/node/lib/transaction-uploader";
-import { generateSHA256 } from "../sha-256-utils";
 import { hashFormSchema } from "../validation/hashform";
-import Arweave from "arweave";
-import * as yup from 'yup';
 import Transaction from "arweave/node/lib/transaction";
+import Arweave from "arweave";
 
 declare global {
   var arweaveKey: any;

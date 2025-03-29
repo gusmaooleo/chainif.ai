@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import { Button } from "../ui/button";
-import { optionsList } from "@/lib/factories/dropdown-options-factory";
+import { optionsList } from "@/lib/constants/originOptions";
 import { useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
 import Image from "next/image";

@@ -22,13 +22,13 @@ import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
 import { FormEvent } from "react";
-import { optionsList } from "@/lib/factories/dropdown-options-factory";
-import OriginDropdownSelector from "./origin-dropdown-selector";
+import { optionsList } from "@/lib/constants/originOptions";
+import OriginDropdownSelector from "../ui-elements/origin-dropdown-selector";
 import { generateSHA256 } from "@/lib/sha-256-utils";
 import { useRouter } from "next/navigation";
 import { setSSEEvent } from "@/lib/slices/sse-slice";
 
-export default function UpComponentForm({ children }: React.PropsWithChildren) {
+export default function UpDataForm({ children }: React.PropsWithChildren) {
   const { inputValue, originValue, authorValue } = useSelector(
     (state: RootState) => state.form
   );
@@ -43,11 +43,9 @@ export default function UpComponentForm({ children }: React.PropsWithChildren) {
     const author = originValue.value !== optionsList.Authorial.value ? originValue.value : authorValue;
     const content = inputValue;
 
-    // Gerar hash no client-side
     const hash = await generateSHA256(content);
     
-    // Forçar o Suspense a mostrar o fallback
-    router.push(`/${hash}`); // Navegação otimista
+    router.push(`/${hash}`);
 
     try {
       const response = await fetch('/api/upData', {
@@ -73,15 +71,16 @@ export default function UpComponentForm({ children }: React.PropsWithChildren) {
           const type = lines.find(l => l.startsWith('event:'))?.split(': ')[1]!;
           const data = JSON.parse(lines.find(l => l.startsWith('data:'))?.split(': ')[1] || '{}');
           
-          dispatch(setSSEEvent({ type, data })); // Atualiza o Redux
+          dispatch(setSSEEvent({ type, data }));
           console.log(data);
         }
       }
       dispatch(setFeedbackValue('Found'));
       
-      router.refresh(); // Forçar revalidação após sucesso
+      router.refresh();
     } catch (error) {
-      dispatch(setSSEEvent({ type: 'error', data: { error: 'Falha no upload' } }));
+      dispatch(setSSEEvent({ type: 'error', data: { error: 'Upload failture.' } }));
+      dispatch(setFeedbackValue('Not-Found'));
     }
   };
 

@@ -8,9 +8,9 @@ import { redirect, useParams } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { setInputValue, setOriginValue } from "@/lib/slices/form-slice";
 import { RootState } from "@/lib/store";
-import OriginDropdownSelector from "./origin-dropdown-selector";
+import OriginDropdownSelector from "../ui-elements/origin-dropdown-selector";
 
-export default function ContentForm() {
+export default function SearchingForm() {
   const { inputValue, originValue } = useSelector((state: RootState) => state.form);
   const isValidHash = useMemo(() => validateSHA256(inputValue), [inputValue]);
   const dispatch = useDispatch();
