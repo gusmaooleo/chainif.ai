@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import DefaultHashContentWrapper from "@/components/wrappers/default-hash-content-wrapper";
+import ContentWrapper from "@/components/wrappers/content-wrapper";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons/faArrowLeft";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import notFoundPage from '@/public/not-found-page.svg';
@@ -8,7 +8,7 @@ import Link from "next/link";
 
 export default async function NotFound() {
   return (
-    <DefaultHashContentWrapper>
+    <ContentWrapper>
       <div className="flex flex-col gap-4 items-center">
         <Image src={notFoundPage} alt="not-found-page vector" width={512} height={512} />
         <h1 className="text-gray-600 text-lg mt-20">Sorry, we didn't find anything here.</h1>
@@ -20,6 +20,6 @@ export default async function NotFound() {
           </Button>
         </Link>
       </div>
-    </DefaultHashContentWrapper>
+    </ContentWrapper>
   );
 }

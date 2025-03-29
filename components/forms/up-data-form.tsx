@@ -23,10 +23,10 @@ import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
 import { FormEvent } from "react";
 import { optionsList } from "@/lib/constants/originOptions";
-import OriginDropdownSelector from "../ui-elements/origin-dropdown-selector";
 import { generateSHA256 } from "@/lib/sha-256-utils";
 import { useRouter } from "next/navigation";
 import { setSSEEvent } from "@/lib/slices/sse-slice";
+import OriginDropdownSelector from "../ui-elements/origin-dropdown-selector";
 
 export default function UpDataForm({ children }: React.PropsWithChildren) {
   const { inputValue, originValue, authorValue } = useSelector(
@@ -48,7 +48,7 @@ export default function UpDataForm({ children }: React.PropsWithChildren) {
     router.push(`/${hash}`);
 
     try {
-      const response = await fetch('/api/upData', {
+      const response = await fetch('/api/upload', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ content, author }),

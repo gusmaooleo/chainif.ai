@@ -1,7 +1,7 @@
 import ShowEquivalentHash from "@/components/ui-elements/show-equivalent-hash";
 import SearchingForm from "@/components/forms/searching-form";
 import FormProviderWrapper from "@/components/wrappers/form-provider-wrapper";
-import DefaultHashContentWrapper from "@/components/wrappers/default-hash-content-wrapper";
+import ContentWrapper from "@/components/wrappers/content-wrapper";
 import FeedbackContent from "@/components/feedback/feedback-content";
 import { DefaultFeedback } from "@/components/feedback/feedback-states";
 import { notFound } from "next/navigation";
@@ -20,7 +20,6 @@ export default async function DynamicHashPage({ params }: DynamicHashPageType) {
 
   return (
     <div className="flex flex-col h-auto items-center justify-between">
-      {/* does not lost SEO advantages */}
       {!hashValue && (
         <div className="flex items-center w-screen flex-col h-full w-[30rem]">
           <div className="flex flex-col items-center h-full">
@@ -29,9 +28,9 @@ export default async function DynamicHashPage({ params }: DynamicHashPageType) {
         </div>
       )}
       <FormProviderWrapper>
-        <DefaultHashContentWrapper>
+        <ContentWrapper>
           <FeedbackContent hashValue={hashValue} />
-        </DefaultHashContentWrapper>
+        </ContentWrapper>
         <div className="w-[32vmax] mb-10">
           <ShowEquivalentHash hashValue={hashValue} />
           <SearchingForm />

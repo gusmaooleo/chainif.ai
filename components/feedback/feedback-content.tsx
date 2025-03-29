@@ -42,7 +42,6 @@ export default function FeedbackContent({ hashValue }: { hashValue: string }) {
     return <></>
   }
 
-
   switch(feedback) {
     case 'Found':
       feedbackComponent = <FoundFeedback hash={hashValue} />;

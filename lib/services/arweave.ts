@@ -4,12 +4,12 @@ import { TransactionUploader } from "arweave/node/lib/transaction-uploader";
 import { hashFormSchema } from "../validation/hashform";
 import Transaction from "arweave/node/lib/transaction";
 import Arweave from "arweave";
+import { getTransactionsByHashQuery } from "./queries/getTransactionByHash";
 
 declare global {
   var arweaveKey: any;
   var publicKey: any;
 }
-
 
 export class ArweaveService {
   constructor(private instance: Arweave) {}
@@ -45,50 +45,10 @@ export class ArweaveService {
    * @param hash
    * @param instance
    */
-  searchForHash = async (
-    hash: string
-  ): Promise<any[] | undefined> => {
+  searchForHash = async (hash: string): Promise<any[] | undefined> => {
     try {
       const { pk } = await this.getArweaveKey();
-      const queryObject = {
-        query: `{
-            transactions(
-              owners:["${pk}"],
-              tags: [
-                {
-                  name: "Hash",
-                  values: ["${hash}"]
-                }
-              ]
-            ) {
-              edges {
-                node {
-                  id
-                  owner {
-                    address
-                  }
-                  tags {
-                    name
-                    value
-                  }
-                  block {
-                    timestamp
-                    height
-                  }
-                  data {
-                    size
-                    type
-                  }
-                  fee {
-                    winston
-                    ar
-                  }
-                }
-              }
-            }
-          }`,
-      };
-
+      const queryObject = getTransactionsByHashQuery(pk, hash);
       const results = await this.instance.api.post("/graphql", queryObject);
       return results.data.data.transactions.edges;
     } catch (error: any) {
@@ -96,12 +56,15 @@ export class ArweaveService {
     }
   };
 
-  createTransaction = async (formData: HashForm, hash: string): Promise<{uploader: TransactionUploader, transaction: Transaction} | Error> => {    
+  createTransaction = async (
+    formData: HashForm,
+    hash: string
+  ): Promise<
+    { uploader: TransactionUploader; transaction: Transaction } | Error
+  > => {
     try {
       await hashFormSchema.validate(formData);
-      
       const { key } = await this.getArweaveKey();
-
       let transaction = await this.instance.createTransaction(
         {
           data: formData.content,
@@ -114,13 +77,15 @@ export class ArweaveService {
       transaction.addTag("Hash", hash);
 
       await this.instance.transactions.sign(transaction, key);
-      const uploader = await this.instance.transactions.getUploader(transaction);
+      const uploader = await this.instance.transactions.getUploader(
+        transaction
+      );
 
       return { uploader: uploader, transaction: transaction };
     } catch (error: any) {
       return error;
     }
-  }
+  };
 
   /**
    * Up the provided hash data to Arweave blockchain using the provided key.

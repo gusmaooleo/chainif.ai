@@ -4,7 +4,7 @@ import { RootState } from "@/lib/store";
 import { useSelector } from "react-redux";
 import DefaultLoading from "../loading/default-loading";
 
-export default function DefaultHashContentWrapper({children}: React.PropsWithChildren) {  
+export default function ContentWrapper({children}: React.PropsWithChildren) {  
   let content = children;
 
   // TODO: armengue do caraio kkkkkkkkkkkkkkkkkkkkkkkkkk
