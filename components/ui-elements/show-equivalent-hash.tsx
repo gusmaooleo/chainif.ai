@@ -1,6 +1,16 @@
+'use client';
+
 import { validateSHA256 } from "@/lib/sha-256-utils";
+import { RootState } from "@/lib/store";
+import { useSelector } from "react-redux";
 
 export default function ShowEquivalentHash({hashValue}: {hashValue: string}) {
+  const { feedbackValue } = useSelector((state: RootState) => state.form);
+  
+  if (feedbackValue === 'Found') {
+    return null
+  }
+  
   if (hashValue && validateSHA256(hashValue)) {
     return (
       <div className="flex flex-row items-center px-2 mb-2 gap-2">

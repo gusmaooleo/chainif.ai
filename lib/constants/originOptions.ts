@@ -13,7 +13,7 @@ export enum OriginType {
   Grok = "Grok",
 }
 
-export const optionsList: Record<OriginType, { icon: string; value: string }> = {
+export const optionsList: Record<string, { icon: string; value: string }> = {
   [OriginType.Authorial]: {
     icon: authorial,
     value: "authorial-text",
