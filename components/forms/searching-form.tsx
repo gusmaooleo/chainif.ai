@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Image from "next/image";
 import { Input } from "../ui/input";
 import { generateSHA256, validateSHA256 } from "@/lib/sha-256-utils";
-import { setInputValue, setOriginValue } from "@/lib/slices/form-slice";
+import { setInputValue } from "@/lib/slices/form-slice";
 import { RootState } from "@/lib/store";
 
 const SubmitButton = ({ isValidHash }: { isValidHash: boolean }) => (

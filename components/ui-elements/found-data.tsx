@@ -6,8 +6,7 @@ import Image from "next/image";
 import FoundDataElement from "./found-data-elements";
 import { CopyButton } from "./copy-button";
 
-export default function FoundData({ data, type }: { data: SSEEventData | null, type: SSEEventType | null }) {
-
+export default function FoundData({ data }: { data: SSEEventData | null}) {
   const getAuthorIcon = (): [string, string | undefined] => {
     const key = Object.keys(optionsList).find((key: string) => optionsList[key].value === data?.author);
     if (!key) {

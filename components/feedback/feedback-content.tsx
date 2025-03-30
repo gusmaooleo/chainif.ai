@@ -58,7 +58,7 @@ export default function FeedbackContent({ hashValue }: { hashValue: string }) {
     
     switch(feedbackValue) {
       case 'Found':
-        return <FoundData data={eventData} type={eventType} />;
+        return <FoundData data={eventData} />;
       case 'Not-Found':
         return <MemoizedNotFoundFeedback />;
       case 'Invalid':
@@ -70,7 +70,7 @@ export default function FeedbackContent({ hashValue }: { hashValue: string }) {
       default:
         return null;
     }
-  }, [feedbackValue, eventData, eventType, hashValue]);
+  }, [feedbackValue, eventData, hashValue]);
 
   return renderedContent;
 }

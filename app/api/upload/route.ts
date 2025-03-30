@@ -29,7 +29,7 @@ export async function POST(request: Request) {
         sendEvent('progress', { state: `Verifying if hash #${hash.slice(0, 6)} already exists on blockchain...`, progress: 25 });
         const queryResults = await arweaveService.searchForHash(hash);
         if (!!queryResults && queryResults.length > 0) {
-          sendEvent('error', { error: 409, message: `Hash already #${hash.slice(0, 6)} exists on blockchain.`, data: body.content, hash: hash, author: body.author, tx_id: queryResults[0].node.id });
+          sendEvent('error', { error: 409, message: `Hash #${hash.slice(0, 6)} already exists on blockchain.`, data: body.content, hash: hash, author: body.author, tx_id: queryResults[0].node.id });
           controller.close();
           return;
         }
@@ -52,7 +52,7 @@ export async function POST(request: Request) {
           console.log(
             `uploading chunk: ${uploader.uploadedChunks}/${uploader.totalChunks}`
           );
-          let remainingPercent = 50 + ((50 * uploader.uploadedChunks)/uploader.totalChunks);
+          const remainingPercent = 50 + ((50 * uploader.uploadedChunks)/uploader.totalChunks);
           sendEvent('progress', { state: "Uploading data to blockchain...", progress: remainingPercent });
         }
     
@@ -69,8 +69,9 @@ export async function POST(request: Request) {
           author: body.author,
           tx_id: transaction.id,
         });
-      } catch (error) {
+      } catch (error: any) {
         sendEvent('error', { message: "Unknown error, try to fetch data again.", error: 400 });
+        console.error(error);
       } finally {
         controller.close();
       }

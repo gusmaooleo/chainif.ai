@@ -64,7 +64,7 @@ export default function UpDataForm({ children }: React.PropsWithChildren) {
         
         for (const event of events) {
           const lines = event.split('\n');
-          const type = lines.find(l => l.startsWith('event:'))?.split(': ')[1]! as SSEEventType;
+          const type = lines.find(l => l.startsWith('event:'))?.split(': ')[1] as SSEEventType;
           const data = JSON.parse(lines.find(l => l.startsWith('data:'))?.split(': ')[1] || '{}') as SSEEventData;
           
           dispatch(setSSEEvent({ type, data }));

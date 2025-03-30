@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { Spinner } from "../ui/spinner";
 import { RootState } from "@/lib/store";
 
-export default function DefaultLoading({text}: {text?: string}) {
+export default function DefaultLoading() {
   const { eventData } = useSelector((state: RootState) => state.sse);
   
   return (

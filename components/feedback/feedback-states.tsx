@@ -51,7 +51,7 @@ export function NotFoundFeedback() {
         width={200}
       />
       <h1 className="text-xl text-gray-600 mt-5">
-        We couldn't find the content
+        We couldn&apos;t find the content
       </h1>
       <p className="text-center text-gray-400">
         Upload this content to the Arweave blockchain or search for another

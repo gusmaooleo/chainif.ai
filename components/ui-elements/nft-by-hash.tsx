@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from 'react';
-import { SVG } from '@svgdotjs/svg.js';
+import { Gradient, SVG } from '@svgdotjs/svg.js';
 import { Button } from '../ui/button';
 
 type NFTGeneratorProps = {
@@ -34,7 +34,7 @@ export default function NftByHash({
     canvas.node.style.overflow = 'hidden';
 
     const bgColor = `#${hash.substring(0, 6)}`;
-    const gradient = canvas.gradient('radial', (add: any) => {
+    const gradient = canvas.gradient('radial', (add: Gradient) => {
       add.stop(0, bgColor);
       add.stop(1, `#${hash.substring(6, 12)}`);
     });
