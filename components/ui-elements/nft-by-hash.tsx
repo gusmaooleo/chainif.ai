@@ -108,7 +108,7 @@ export default function NftByHash({
 
   return (
     <div className='flex flex-col gap-2'>
-      <div ref={containerRef} className="rounded-lg" />
+      <div ref={containerRef} className="aspect-square" />
       <Button onClick={handleDownload}>Download NFT</Button>
     </div>
   ) 
