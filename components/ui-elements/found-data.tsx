@@ -1,14 +1,13 @@
-import { SSEEventData } from "@/types/sseevent";
+import { SSEEventData, SSEEventType } from "@/types/sseevent";
 import { FoundFeedback } from "../feedback/feedback-states";
 
-export default function FoundData({ data }: { data: SSEEventData | null }) {
-  console.log('asdasd')
+export default function FoundData({ data, type }: { data: SSEEventData | null, type: SSEEventType | null }) {
 
+  
   if (data && data.hash) {
-    console.log(data);
     return (
       <>
-        <FoundFeedback hash={data.hash} />
+        <FoundFeedback title={data.message} />
         <div>
           {data.data} <br />
           {data.author} <br />

@@ -1,49 +1,59 @@
-import Link from "next/link";
-import { Button } from "../ui/button";
-import UpDataForm from "../forms/up-data-form";
+"use client";
+
 import getFeedback from "./actions/actions";
-import {
-  FoundFeedback,
-  InvalidFeedback,
-  NotFoundFeedback,
-} from "./feedback-states";
+import Link from "next/link";
+import UpDataForm from "../forms/up-data-form";
+import { Button } from "../ui/button";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/lib/store";
+import { setFeedbackValue } from "@/lib/slices/form-slice";
+import DefaultLoading from "../loading/default-loading";
+import { InvalidFeedback, NotFoundFeedback } from "./feedback-states";
+import { setSSEEvent } from "@/lib/slices/sse-slice";
 import FoundData from "../ui-elements/found-data";
 
-export default async function FeedbackContent({ hashValue }: { hashValue: string }) {
-  if (!hashValue) {
-    return <></>;
-  }
-  let children: React.ReactNode;
-  const feedback = await getFeedback(hashValue);
+export default function FeedbackContent({ hashValue }: { hashValue: string }) {
+  const { feedbackValue } = useSelector((state: RootState) => state.form);
+  const { eventType, eventData } = useSelector((state: RootState) => state.sse);
+  const dispatch = useDispatch();
 
-  switch (feedback.feedback) {
-    case "Found":
-      children = feedback.data ? <FoundData data={feedback.data} /> : null;
-      break;
-    case "Not-Found":
-      children = <NotFoundFeedback />;
-      break;
-    case "Invalid":
-      children = <InvalidFeedback />;
-      break;
+  useEffect(() => {
+    if (!hashValue) return;
+    
+    const fetchData = async () => {
+      dispatch(setFeedbackValue('Fetching'));
+      const fetchFeedback = await getFeedback(hashValue);
+      dispatch(setFeedbackValue(fetchFeedback.feedback));
+      if (fetchFeedback.feedback === 'Found' && fetchFeedback.data) {
+        dispatch(setSSEEvent({ type: 'complete', data: fetchFeedback.data }));
+      }
+    };
+    
+    fetchData();
+  }, [hashValue, dispatch]);
+
+  if (!hashValue) return null;
+  switch(feedbackValue) {
+    case 'Found':
+      return <FoundData data={eventData} type={eventType} />;
+    case 'Not-Found':
+      return (
+        <>
+          <NotFoundFeedback />
+          <div className="flex flex-row gap-4 mt-10">
+            <Link href="/">
+              <Button variant='outline'>Cancel</Button>
+            </Link>
+            <UpDataForm>Up to blockchain</UpDataForm>
+          </div>
+        </>
+      );
+    case 'Invalid':
+      return <InvalidFeedback />;
+    case 'Fetching':
+      return <DefaultLoading />;
     default:
-      children = <></>;
-      break;
+      return null;
   }
-
-  return (
-    <>
-      {children}
-      {feedback.feedback === "Not-Found" && (
-        <div className="flex flex-row gap-4 mt-10">
-          <Link href="/">
-            <Button variant="outline" className="text-gray-600 cursor-pointer">
-              Cancel
-            </Button>
-          </Link>
-          <UpDataForm>Up to blockchain</UpDataForm>
-        </div>
-      )}
-    </>
-  );
 }

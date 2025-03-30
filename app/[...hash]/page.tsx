@@ -5,8 +5,6 @@ import ContentWrapper from "@/components/wrappers/content-wrapper";
 import FeedbackContent from "@/components/feedback/feedback-content";
 import { DefaultFeedback } from "@/components/feedback/feedback-states";
 import { notFound } from "next/navigation";
-import { Suspense } from "react";
-import DefaultLoading from "@/components/loading/default-loading";
 
 type DynamicHashPageType = {
   params: Promise<{ hash: string[] }>;
@@ -31,9 +29,7 @@ export default async function DynamicHashPage({ params }: DynamicHashPageType) {
       )}
       <FormProviderWrapper>
         <ContentWrapper>
-          <Suspense fallback={<DefaultLoading text="Searching your data on Arweave blockchain." />}>
-            <FeedbackContent hashValue={hashValue} />
-          </Suspense>
+          <FeedbackContent hashValue={hashValue} />
         </ContentWrapper>
         <div className="w-[32vmax] mb-10">
           <ShowEquivalentHash hashValue={hashValue} />

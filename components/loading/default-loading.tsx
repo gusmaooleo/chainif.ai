@@ -10,7 +10,7 @@ export default function DefaultLoading({text}: {text?: string}) {
   return (
     <div className="flex flex-col gap-4 w-[20rem] mt-30">
       <Spinner size={"ultralarge"} className="text-gray-600" />
-      <p className="text-center text-gray-600">{text ? text : !!eventData ? eventData.message : text}</p>
+      <p className="text-center text-gray-600">{(eventData && eventData.state) ? eventData.state : "Searching your data on Arweave blockchain."}</p>
     </div>
   )
 }

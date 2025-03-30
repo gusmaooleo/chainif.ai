@@ -25,15 +25,23 @@ async function searchForHash(hash: string): Promise<{ foundValues: any[], data: 
 
 export default async function getFeedback(hashValue: string): Promise<ResponseType> {
   if (!validateSHA256(hashValue)) return { feedback: 'Invalid' };
-  await new Promise((resolve) => setTimeout(resolve, 2000))
-  
+
   const queryResult = await searchForHash(hashValue);
+  const hasFoundValues = !!queryResult?.foundValues && queryResult.foundValues.length > 0;
+
+  const firstFoundValue = queryResult?.foundValues?.[0];
+  const txId = firstFoundValue?.node.id;
+  const authorTag = firstFoundValue?.node.tags.find((obj: any) => obj.name === 'Author');
+  const author = authorTag?.value;
+
   return {
-    feedback: !!queryResult?.foundValues && (queryResult.foundValues.length > 0) ? 'Found' : 'Not-Found',
+    feedback: hasFoundValues ? 'Found' : 'Not-Found',
     data: {
+      message: `We find the content for #${hashValue.slice(0, 6)} hash.`,
+      tx_id: txId,
       data: queryResult?.data,
       hash: hashValue,
-      author: !!queryResult?.foundValues[0] && queryResult?.foundValues[0].node.tags.find((obj: any) => obj.name === 'Author').value,
+      author: author
     }
-  }
+  };
 }

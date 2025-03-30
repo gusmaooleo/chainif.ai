@@ -92,6 +92,7 @@ export class ArweaveService {
    * @param pk
    * @param hash
    * @param instance
+   * @deprecated
    */
   upHashData = async (
     transaction: Transaction,

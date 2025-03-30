@@ -13,10 +13,10 @@ export function DefaultFeedback() {
   )
 }
 
-export function FoundFeedback({hash}: {hash: string}) {
+export function FoundFeedback({title}: {title?: string}) {
   return (
     <div className="flex items-center flex-row gap-2 mt-5">
-      <h1 className="text-2xl text-gray-600">We find the content for #{hash.slice(0, 6)} hash</h1>
+      <h1 className="text-2xl text-gray-600">{title}</h1>
       <FontAwesomeIcon icon={faCircleCheck} className="text-success w-6" />
     </div>
   )

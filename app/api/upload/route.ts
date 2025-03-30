@@ -26,20 +26,18 @@ export async function POST(request: Request) {
       const hash = generateSHA256(body.content);
 
       try {
-        sendEvent('progress', { message: "Verifing if hash already exists on blockchain...", progress: 25 });
-        await new Promise((resolve) => setTimeout(resolve, 1000))
+        sendEvent('progress', { state: `Verifying if hash #${hash.slice(0, 6)} already exists on blockchain...`, progress: 25 });
         const queryResults = await arweaveService.searchForHash(hash);
         if (!!queryResults && queryResults.length > 0) {
-          sendEvent('error', { error: "Hash already exists on blockchain." });
+          sendEvent('error', { error: 409, message: `Hash already #${hash.slice(0, 6)} exists on blockchain.`, data: body.content, hash: hash, author: body.author, tx_id: queryResults[0].node.id });
           controller.close();
           return;
         }
 
-        sendEvent('progress', { message: "Starting transaction...", progress: 50 });
-        await new Promise((resolve) => setTimeout(resolve, 1000))
+        sendEvent('progress', { state: "Starting transaction...", progress: 50 });
         const results = await arweaveService.createTransaction(body, hash);
         if (!results) {
-          sendEvent('error', { error: "Cannot create transaction." });
+          sendEvent('error', { message: "Cannot create transaction.", error: 400 });
           controller.close()
           return;
         }
@@ -48,30 +46,31 @@ export async function POST(request: Request) {
         }
         const { uploader, transaction } = results;
         
-        sendEvent('progress', { message: "Up data to blockchain...", progress: 50 });
-        await new Promise((resolve) => setTimeout(resolve, 4000))
+        sendEvent('progress', { state: "Uploading data to blockchain...", progress: 50 });
         while (!uploader.isComplete) {
           await uploader.uploadChunk();
           console.log(
             `uploading chunk: ${uploader.uploadedChunks}/${uploader.totalChunks}`
           );
           let remainingPercent = 50 + ((50 * uploader.uploadedChunks)/uploader.totalChunks);
-          sendEvent('progress', { message: "Up data to blockchain...", progress: remainingPercent });
+          sendEvent('progress', { state: "Uploading data to blockchain...", progress: remainingPercent });
         }
     
         if (process.env.NODE_ENV !== "production") {
           await mine();
         }
 
-        const insertedData = await arweave.api.get(`/${transaction.id}`);
         sendEvent('complete', { 
           success: true,
-          message: "Data successfully inserted on blockchain.",
-          data: insertedData.data,
+          message: `Hash #${hash.slice(0, 6)} successfully inserted on blockchain.`,
+          state: "",
+          data: body.content,
           hash: hash,
+          author: body.author,
+          tx_id: transaction.id,
         });
       } catch (error) {
-        sendEvent('error', { error: "Unknown error, try to fetch data again." });
+        sendEvent('error', { message: "Unknown error, try to fetch data again.", error: 400 });
       } finally {
         controller.close();
       }

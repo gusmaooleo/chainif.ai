@@ -4,7 +4,6 @@ import {
   Dialog,
   DialogClose,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -24,7 +23,6 @@ import { Button } from "../ui/button";
 import { FormEvent } from "react";
 import { optionsList } from "@/lib/constants/originOptions";
 import { generateSHA256 } from "@/lib/sha-256-utils";
-import { useRouter } from "next/navigation";
 import { setSSEEvent } from "@/lib/slices/sse-slice";
 import OriginDropdownSelector from "../ui-elements/origin-dropdown-selector";
 import { SSEEventData, SSEEventType } from "@/types/sseevent";
@@ -34,7 +32,6 @@ export default function UpDataForm({ children }: React.PropsWithChildren) {
     (state: RootState) => state.form
   );
   const dispatch = useDispatch();
-  const router = useRouter();
 
   // TODO: hash must be generated on server and client side.
   const handleSubmit = async (e: FormEvent) => {
@@ -43,10 +40,8 @@ export default function UpDataForm({ children }: React.PropsWithChildren) {
     dispatch(setFeedbackValue('Fetching'));
     const author = originValue.value !== optionsList.Authorial.value ? originValue.value : authorValue;
     const content = inputValue;
-
     const hash = await generateSHA256(content);
-    
-    router.push(`/${hash}`);
+    window.history.pushState(null, '', `/${hash}`)
     
     try {
       const response = await fetch('/api/upload', {
@@ -77,17 +72,18 @@ export default function UpDataForm({ children }: React.PropsWithChildren) {
         }
       }
       dispatch(setFeedbackValue('Found'));
-      router.refresh();
     } catch (error) {
-      dispatch(setSSEEvent({ type: 'error', data: { error: 'Upload failture.' } }));
+      dispatch(setSSEEvent({ type: 'error', data: { error: 400, message: 'Upload failture.' } }));
       dispatch(setFeedbackValue('Not-Found'));
     }
   };
 
   return (
     <Dialog>
-      <DialogTrigger className="text-sm text-gray-000 bg-d-button hover:bg-d-button-hover py-2 px-4 rounded-lg cursor-pointer transition-colors">
-        {children}
+      <DialogTrigger asChild>
+        <Button className="bg-d-button hover:bg-d-button-hover">
+          {children}
+        </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

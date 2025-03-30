@@ -17,7 +17,7 @@ export const sseSlice = createSlice({
   name: "sse",
   initialState,
   reducers: {
-    setSSEEvent: (state, action: PayloadAction<{ type: SSEEventType | null; data: SSEEventData }>) => {
+    setSSEEvent: (state, action: PayloadAction<{ type: SSEEventType | null; data: SSEEventData | null }>) => {
       state.eventType = action.payload.type;
       state.eventData = action.payload.data;
     },
