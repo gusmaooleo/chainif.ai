@@ -26,6 +26,7 @@ import { generateSHA256 } from "@/lib/sha-256-utils";
 import { setSSEEvent } from "@/lib/slices/sse-slice";
 import OriginDropdownSelector from "../ui-elements/origin-dropdown-selector";
 import { SSEEventData, SSEEventType } from "@/types/sseevent";
+import { parseSSEData } from "@/lib/parse-ssedata";
 
 export default function UpDataForm({ children }: React.PropsWithChildren) {
   const { inputValue, originValue, authorValue } = useSelector(
@@ -65,7 +66,7 @@ export default function UpDataForm({ children }: React.PropsWithChildren) {
         for (const event of events) {
           const lines = event.split('\n');
           const type = lines.find(l => l.startsWith('event:'))?.split(': ')[1] as SSEEventType;
-          const data = JSON.parse(lines.find(l => l.startsWith('data:'))?.split(': ')[1] || '{}') as SSEEventData;
+          const data = parseSSEData(lines) as SSEEventData;
           
           dispatch(setSSEEvent({ type, data }));
           if (data.error === 400) {

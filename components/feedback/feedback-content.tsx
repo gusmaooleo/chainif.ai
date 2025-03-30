@@ -27,7 +27,7 @@ const MemoizedNotFoundFeedback = () => (
 
 export default function FeedbackContent({ hashValue }: { hashValue: string }) {
   const { feedbackValue } = useSelector((state: RootState) => state.form);
-  const { eventType, eventData } = useSelector((state: RootState) => state.sse);
+  const { eventData } = useSelector((state: RootState) => state.sse);
   const dispatch = useDispatch();
 
   const fetchFeedbackData = useCallback(async () => {
