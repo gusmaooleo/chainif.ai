@@ -108,8 +108,9 @@ export default function UpDataForm({ children }: React.PropsWithChildren) {
           <Textarea
             defaultValue={inputValue}
             placeholder="Registered content"
-            className="text-sm text-gray-600 placeholder:text-gray-300 min-h-[200px] max-h-[500px]"
+            className="text-sm max-w-[462px] text-gray-600 placeholder:text-gray-300 min-h-[200px] max-h-[500px]"
             onChange={(e) => dispatch(setInputValue(e.target.value))}
+            maxLength={3000}
             required
           />
           <DialogFooter>
