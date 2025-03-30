@@ -47,7 +47,7 @@ export default function FoundData({ data, type }: { data: SSEEventData | null, t
           </div>
 
           <FoundDataElement title="Data:">
-            <div className="bg-gray-200 h-full w-[40vmin] rounded-lg p-4 font-[Fira_Code] text-sm relative">
+            <div className="bg-gray-200 h-full w-[40vmin] rounded-lg p-4 font-[Fira_Code] text-sm relative border border-gray-300">
               <CopyButton textToCopy={data.data} className="absolute top-1 right-1" />
               {data.data}
             </div>

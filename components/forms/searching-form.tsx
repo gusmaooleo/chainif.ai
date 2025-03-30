@@ -8,7 +8,6 @@ import { Input } from "../ui/input";
 import { generateSHA256, validateSHA256 } from "@/lib/sha-256-utils";
 import { setInputValue, setOriginValue } from "@/lib/slices/form-slice";
 import { RootState } from "@/lib/store";
-import OriginDropdownSelector from "../ui-elements/origin-dropdown-selector";
 
 const SubmitButton = ({ isValidHash }: { isValidHash: boolean }) => (
   <button type="submit" className="relative ml-[-2rem]">
@@ -72,7 +71,6 @@ export default function SearchingForm() {
         />
         <SubmitButton isValidHash={isValidHash} />
       </div>
-      <OriginDropdownSelector setOrigin={useCallback((value) => dispatch(setOriginValue(value)), [dispatch])} />
     </form>
   );
 }
