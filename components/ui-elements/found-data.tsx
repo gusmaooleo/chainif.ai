@@ -7,22 +7,24 @@ import FoundDataElement from "./found-data-elements";
 import { CopyButton } from "./copy-button";
 
 export default function FoundData({ data, type }: { data: SSEEventData | null, type: SSEEventType | null }) {
-  const getAuthorIcon = () => {
+
+  const getAuthorIcon = (): [string, string | undefined] => {
     const key = Object.keys(optionsList).find((key: string) => optionsList[key].value === data?.author);
-    console.log(key)
     if (!key) {
-      return optionsList["Authorial"].icon;
+      return [optionsList["Authorial"].icon, data?.author];
     }
 
-    return optionsList[key].icon
+    if (key === 'Authorial') {
+      return [optionsList[key].icon, data?.author]
+    }
+    
+    return [optionsList[key].icon, key]
   }
   
-  
   if (data && data.hash) {
-    console.log(data);
     return (
       <>
-        <FoundFeedback title={data.message} />
+        <FoundFeedback title={data.message} tx_id={data.tx_id} />
         <div className="flex flex-row h-full py-10 gap-10">
           <div className="flex flex-col justify-between w-[350px]">
             <FoundDataElement title="NFT:">
@@ -38,8 +40,8 @@ export default function FoundData({ data, type }: { data: SSEEventData | null, t
 
             <FoundDataElement title="Author:">
               <div className="flex items-center flex-row gap-2">
-                <Image src={getAuthorIcon()} alt="Author" width={30} height={30} />
-                <p className="truncate text-sm text-gray-600">{data.author}</p>
+                <Image src={getAuthorIcon()[0]} alt="Author" width={30} height={30} />
+                <p className="truncate text-sm text-gray-600 capitalize">{getAuthorIcon()[1]}</p>
               </div>
             </FoundDataElement>
           </div>
