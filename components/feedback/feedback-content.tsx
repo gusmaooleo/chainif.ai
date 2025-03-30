@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
 import { setFeedbackValue } from "@/lib/slices/form-slice";
 import DefaultLoading from "../loading/default-loading";
-import { InvalidFeedback, NotFoundFeedback } from "./feedback-states";
+import { ErrorFeedback, InvalidFeedback, NotFoundFeedback } from "./feedback-states";
 import { setSSEEvent } from "@/lib/slices/sse-slice";
 import FoundData from "../ui-elements/found-data";
 
@@ -19,6 +19,7 @@ export default function FeedbackContent({ hashValue }: { hashValue: string }) {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    console.log('Feedback-content')
     if (!hashValue) return;
     
     const fetchData = async () => {
@@ -53,6 +54,8 @@ export default function FeedbackContent({ hashValue }: { hashValue: string }) {
       return <InvalidFeedback />;
     case 'Fetching':
       return <DefaultLoading />;
+    case 'Error':
+      return <ErrorFeedback error={eventData?.message} />
     default:
       return null;
   }

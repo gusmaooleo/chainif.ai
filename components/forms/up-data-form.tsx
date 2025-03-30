@@ -68,13 +68,15 @@ export default function UpDataForm({ children }: React.PropsWithChildren) {
           const data = JSON.parse(lines.find(l => l.startsWith('data:'))?.split(': ')[1] || '{}') as SSEEventData;
           
           dispatch(setSSEEvent({ type, data }));
-          console.log(data);
+          if (data.error === 400) {
+            throw new Error("Check that all data has been passed correctly.")
+          }
         }
       }
       dispatch(setFeedbackValue('Found'));
-    } catch (error) {
-      dispatch(setSSEEvent({ type: 'error', data: { error: 400, message: 'Upload failture.' } }));
-      dispatch(setFeedbackValue('Not-Found'));
+    } catch (error: any) {
+      dispatch(setSSEEvent({ type: 'error', data: { error: 400, message: error.message } }));
+      dispatch(setFeedbackValue('Error'));
     }
   };
 
