@@ -2,7 +2,7 @@
 
 # dependencies
 /node_modules
-/arlocal/node_modules
+/arlocal
 /.pnp
 .pnp.*
 .yarn/*
