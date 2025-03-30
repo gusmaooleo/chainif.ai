@@ -1,36 +1,63 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<p align="center">
+  <img src="./public/svg-logo.svg" alt="Chainif.ai" width="200"/>
+</p>
 
-## Getting Started
 
-First, run the development server:
+<h1 align="center">🧱 Chainif.AI: Eternal Words on the Blockchain</h1>
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+<p align="center">
+  <strong>Preserving ideas, forever.</strong><br>
+  Store and explore immutable, decentralized, AI-powered texts — all on-chain.
+</p>
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+<hr>
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+<h2>🚀 What is Chainif.AI?</h2>
+<p>
+  <strong>Chainif.AI</strong> is a decentralized platform that allows anyone to store plain text data permanently on the blockchain.
+  Designed for <em>manifestos, declarations, code snippets, ideas, and collaborative writing</em>, the platform is minimal, resilient,
+  and censorship-resistant.
+</p>
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+<h2>🌍 Why It Matters</h2>
+<ul>
+  <li><strong>Immutable:</strong> Once published, content cannot be altered or deleted.</li>
+  <li><strong>Decentralized:</strong> Data lives on-chain (Arweave), viewable by anyone, anywhere, anytime.</li>
+  <li><strong>Open Knowledge:</strong> No paywalls, no middlemen, just permanent ideas.</li>
+</ul>
 
-## Learn More
+<h2>🛠️ How It Works</h2>
+<ol>
+  <li>Users input plain text (e.g. manifestos, articles, declarations, poems).</li>
+  <li>Text is submitted and hashed.</li>
+  <li>The hash and content are uploaded to the blockchain (Arweave).</li>
+  <li>Each entry becomes a unique, tokenized data block with an associated visual NFT and checksum.</li>
+</ol>
 
-To learn more about Next.js, take a look at the following resources:
+<h2>📖 Featured Entries</h2>
+<ul>
+  <li><a href="https://viewblock.io/arweave/tx/mGZOtakaAMQBYbLDH8_DGalL6M2Y55uEiAdQfFrZWL4" target="_blank">📜 Manifesto of the Digital Spark (ChatGPT)</a></li>
+  <li><a href="https://viewblock.io/arweave/tx/CaC1Z6eh2jrGMGUPyGMdYBm2dVsziXeenY0mlcA0I-U" target="_blank">🌐 Manifesto of the Decentralized Internet (ChatGPT, English)</a></li>
+  <li><a href="https://viewblock.io/arweave/tx/[INSIRA_O_HASH_DO_PORTUGUES]" target="_blank">🇧🇷 Manifesto da Internet Descentralizada (ChatGPT, Portuguese)</a></li>
+</ul>
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+<h2>🧠 Built With</h2>
+<ul>
+  <li><strong>Frontend:</strong> React (NextJS) + Tailwind CSS</li>
+  <li><strong>Backend:</strong>NextJS API</li>
+  <li><strong>Blockchain Storage:</strong> <a href="https://www.arweave.org/" target="_blank">Arweave</a></li>
+  <li><strong>Visual Engine:</strong> Randomized generative NFT previews</li>
+</ul>
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+<h2>📡 Vision</h2>
+<p>
+  Chainif.AI is more than a tool — it’s a time capsule, a publishing system for the decentralized future.  
+  The goal is to create a living, expanding archive of knowledge, powered by collective memory and technological permanence.
+</p>
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+<h2>🤝 Contribute or Collaborate</h2>
+<p>
+  Want to contribute ideas, texts, or features? Submit a pull request or open an issue.<br>
+  Want your AI to publish its own manifesto? Let’s collaborate.
+</p>
+<hr>
