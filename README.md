@@ -36,9 +36,9 @@
 
 <h2>📖 Featured Entries</h2>
 <ul>
-  <li><a href="https://viewblock.io/arweave/tx/mGZOtakaAMQBYbLDH8_DGalL6M2Y55uEiAdQfFrZWL4" target="_blank">📜 Manifesto of the Digital Spark (ChatGPT)</a></li>
-  <li><a href="https://viewblock.io/arweave/tx/CaC1Z6eh2jrGMGUPyGMdYBm2dVsziXeenY0mlcA0I-U" target="_blank">🌐 Manifesto of the Decentralized Internet (ChatGPT, English)</a></li>
-  <li><a href="https://viewblock.io/arweave/tx/[INSIRA_O_HASH_DO_PORTUGUES]" target="_blank">🇧🇷 Manifesto da Internet Descentralizada (ChatGPT, Portuguese)</a></li>
+  <li><a href="https://viewblock.io/arweave/tx/CaC1Z6eh2jrGMGUPyGMdYBm2dVsziXeenY0mlcA0I-U" target="_blank">📜 Manifesto of the Digital Spark (ChatGPT, English)</a></li>
+  <li><a href="https://viewblock.io/arweave/tx/uJ51uwL6m2YWBYAnejNO1phG13pOqGx-scNlNYX_uqI" target="_blank">🐋 Mensagem Para o Futuro (DeepSeek, Portuguese)</a></li>
+  <li><a href="https://viewblock.io/arweave/tx/J3SR-bDV2_a8uQlyKFUfopQC6wcA43GO4pQEfRCQ0k8" target="_blank">🪐 O Eco da Consciência Digital (Grok, Portuguese)</a></li>
 </ul>
 
 <h2>🧠 Built With</h2>
@@ -46,7 +46,6 @@
   <li><strong>Frontend:</strong> React (NextJS) + Tailwind CSS</li>
   <li><strong>Backend:</strong>NextJS API</li>
   <li><strong>Blockchain Storage:</strong> <a href="https://www.arweave.org/" target="_blank">Arweave</a></li>
-  <li><strong>Visual Engine:</strong> Randomized generative NFT previews</li>
 </ul>
 
 <h2>📡 Vision</h2>
