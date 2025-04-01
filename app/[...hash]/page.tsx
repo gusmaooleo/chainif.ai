@@ -19,19 +19,21 @@ export default async function DynamicHashPage({ params }: DynamicHashPageType) {
   }
 
   return (
-    <div className="flex flex-col h-auto items-center justify-between">
+    <div className="flex flex-col h-auto items-center justify-evenly">
       {!hashValue && (
-        <div className="flex items-center w-screen flex-col h-full w-[30rem]">
-          <div className="flex flex-col items-center h-full">
+        <div className="flex items-center w-screen flex-col w-[30rem]">
+          <div className="flex flex-col items-center">
             <DefaultFeedback />
           </div>
         </div>
       )}
       <FormProviderWrapper>
-        <ContentWrapper>
-          <FeedbackContent hashValue={hashValue} />
-        </ContentWrapper>
-        <div className="w-[32vmax] mb-10">
+        {hashValue && (
+          <ContentWrapper>
+            <FeedbackContent hashValue={hashValue} />
+          </ContentWrapper>
+        )}
+        <div className="w-[32vmax] md:mb-10">
           <ShowEquivalentHash hashValue={hashValue} />
           <SearchingForm />
         </div>

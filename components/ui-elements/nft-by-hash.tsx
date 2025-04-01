@@ -6,33 +6,30 @@ import { Button } from '../ui/button';
 
 type NFTGeneratorProps = {
   hash: string;
-  width?: number;
-  height?: number;
   className?: string;
 };
 
-// TODO: this image is being generated on client side, the logics should be moved to a separated backend.
-// TODO: image is NOT responsible.
 export default function NftByHash({
   hash,
-  width = 350,
-  height = 350,
   className = ''
 }: NFTGeneratorProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [svgString, setSvgString] = useState<string>('');
   const [svgUrl, setSvgUrl] = useState<string>('');
 
+  const width = 350;
+  const height = 350;
+
   useEffect(() => {
     if (!hash || !containerRef.current) return;
 
     containerRef.current.innerHTML = '';
 
-    const canvas = SVG().addTo(containerRef.current).size(width, height);
+    const canvas = SVG().addTo(containerRef.current);
+    canvas.viewbox(0, 0, width, height);
+    canvas.attr({ preserveAspectRatio: 'xMidYMid meet' });
 
-    canvas.node.style.borderRadius = "8px"
-    canvas.node.style.overflow = 'hidden';
-
+    // background gradient
     const bgColor = `#${hash.substring(0, 6)}`;
     const gradient = canvas.gradient('radial', (add: Gradient) => {
       add.stop(0, bgColor);
@@ -79,20 +76,18 @@ export default function NftByHash({
       .move(width - 198, height - 30)
       .fill('rgba(0, 0, 0, 0.6)');
 
-    
     const svgStr = canvas.svg();
     setSvgString(svgStr);
-    
+
     const blob = new Blob([svgStr], { type: 'image/svg+xml' });
     const url = URL.createObjectURL(blob);
     setSvgUrl(url);
-
 
     return () => {
       canvas.clear();
       URL.revokeObjectURL(url);
     };
-  }, [hash, width, height]);
+  }, [hash]);
 
   const handleDownload = () => {
     if (!svgString) return;
@@ -105,11 +100,13 @@ export default function NftByHash({
     document.body.removeChild(link);
   };
 
-
   return (
-    <div className='flex flex-col gap-2'>
-      <div ref={containerRef} className="aspect-square" />
+    <div className={`flex flex-col gap-2 ${className}`}>
+      <div
+        ref={containerRef}
+        className="self-center w-full aspect-square rounded-xl overflow-hidden"
+      />
       <Button onClick={handleDownload}>Download NFT</Button>
     </div>
-  ) 
+  );
 }

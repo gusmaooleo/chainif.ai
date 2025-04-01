@@ -64,7 +64,7 @@ export default function SearchingForm() {
     <form className="flex flex-row gap-2" onSubmit={handleSubmit}>
       <div className="flex flex-row w-full">
         <Input
-          className="rounded-full text-sm text-gray-600 placeholder:text-gray-300 pr-9"
+          className="rounded-full text-sm text-gray-600 placeholder:text-gray-300 pr-9 bg-gray-000"
           value={localInput}
           placeholder="Paste SHA256, authorial texts or ai generated content"
           onChange={handleInputChange}

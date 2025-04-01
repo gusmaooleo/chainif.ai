@@ -11,7 +11,7 @@ import { setFeedbackValue } from "@/lib/slices/form-slice";
 import DefaultLoading from "../loading/default-loading";
 import { ErrorFeedback, InvalidFeedback, NotFoundFeedback } from "./feedback-states";
 import { setSSEEvent } from "@/lib/slices/sse-slice";
-import FoundData from "../ui-elements/found-data";
+import FoundData from "../found-data/found-data";
 
 const MemoizedNotFoundFeedback = () => (
   <>

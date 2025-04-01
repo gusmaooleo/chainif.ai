@@ -9,5 +9,6 @@ export type SSEEventData = {
   success?: boolean;
   hash?: string;
   data?: any;
+  date?: string;
   tx_id?: string;
 };
