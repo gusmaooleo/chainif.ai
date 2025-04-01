@@ -24,19 +24,21 @@ export function FoundFeedback({
   tx_id?: string;
 }) {
   return (
-    <div className="flex items-center flex-row gap-2 mt-5">
-      <h1 className="text-2xl text-gray-600">{title}</h1>
-      <FontAwesomeIcon icon={faCircleCheck} className="text-success text-xl" />
-      <a
-        href={`https://viewblock.io/arweave/tx/${tx_id}`}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        <FontAwesomeIcon
-          icon={faArrowUpRightFromSquare}
-          className="ml-3 text-gray-600 text-sm"
-        />
-      </a>
+    <div className="flex items-center flex-row gap-2 pr-4 pl-4 md:p-0">
+      <h1 className="text-xl md:text-2xl text-gray-600">{title}</h1>
+      <div className="flex flex-col md:flex-row gap-3 md:ml-4 items-center">
+        <FontAwesomeIcon icon={faCircleCheck} className="text-success text-xl" />
+        <a
+          href={`https://viewblock.io/arweave/tx/${tx_id}`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <FontAwesomeIcon
+            icon={faArrowUpRightFromSquare}
+            className="text-gray-600 text-sm"
+          />
+        </a>
+      </div>
     </div>
   );
 }

@@ -30,6 +30,7 @@ export default async function getFeedback(hashValue: string): Promise<ResponseTy
   const hasFoundValues = !!queryResult?.foundValues && queryResult.foundValues.length > 0;
 
   const firstFoundValue = queryResult?.foundValues?.[0];
+  const date = queryResult && queryResult.foundValues.length > 0 ? new Date(queryResult?.foundValues[0].node.block.timestamp * 1000).toISOString() : undefined;
   const txId = firstFoundValue?.node.id;
   const authorTag = firstFoundValue?.node.tags.find((obj: any) => obj.name === 'Author');
   const author = authorTag?.value;
@@ -41,6 +42,7 @@ export default async function getFeedback(hashValue: string): Promise<ResponseTy
       tx_id: txId,
       data: queryResult?.data,
       hash: hashValue,
+      date: date,
       author: author
     }
   };

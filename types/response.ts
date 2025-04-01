@@ -1,14 +1,7 @@
 import { FeedbackType } from "./feedback";
-
-type ResponseData = {
-  author?: string;
-  message: string;
-  tx_id?: string;
-  hash: string;
-  data: any;
-}
+import { SSEEventData } from "./sseevent";
 
 export type ResponseType = {
   feedback: FeedbackType;
-  data?: ResponseData;
+  data?: SSEEventData;
 }

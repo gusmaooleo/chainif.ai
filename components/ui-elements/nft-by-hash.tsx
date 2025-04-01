@@ -6,33 +6,32 @@ import { Button } from '../ui/button';
 
 type NFTGeneratorProps = {
   hash: string;
-  width?: number;
-  height?: number;
   className?: string;
+  title?: string;
 };
 
-// TODO: this image is being generated on client side, the logics should be moved to a separated backend.
-// TODO: image is NOT responsible.
 export default function NftByHash({
   hash,
-  width = 350,
-  height = 350,
+  title,
   className = ''
 }: NFTGeneratorProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [svgString, setSvgString] = useState<string>('');
   const [svgUrl, setSvgUrl] = useState<string>('');
 
+  const width = 350;
+  const height = 350;
+
   useEffect(() => {
     if (!hash || !containerRef.current) return;
 
     containerRef.current.innerHTML = '';
 
-    const canvas = SVG().addTo(containerRef.current).size(width, height);
+    const canvas = SVG().addTo(containerRef.current);
+    canvas.viewbox(0, 0, width, height);
+    canvas.attr({ preserveAspectRatio: 'xMidYMid meet' });
 
-    canvas.node.style.borderRadius = "8px"
-    canvas.node.style.overflow = 'hidden';
-
+    // background gradient
     const bgColor = `#${hash.substring(0, 6)}`;
     const gradient = canvas.gradient('radial', (add: Gradient) => {
       add.stop(0, bgColor);
@@ -50,21 +49,47 @@ export default function NftByHash({
       const color = `#${hash.substring(16 + i * 6, 22 + i * 6)}`;
       const rotation = parseInt(hash.substring(22 + i * 4, 24 + i * 4), 16) % 360;
 
+      const getSafeNumber = (value: number, fallback: number, max?: number) => {
+        const num = isNaN(value) ? fallback : value;
+        return max ? Math.min(num, max) : num;
+      };
+      
       switch (shapeType) {
         case 0:
-          canvas.circle(size)
-            .center(x, y)
+          const circleSize = getSafeNumber(size, 50, width);
+          canvas.circle(circleSize)
+            .center(
+              getSafeNumber(x, width/2, width),
+              getSafeNumber(y, height/2, height)
+            )
             .fill(color)
             .opacity(0.7);
           break;
         case 1:
-          canvas.rect(size, size / 2)
-            .move(x, y)
+          const rectWidth = getSafeNumber(size, 50, width);
+          const rectHeight = getSafeNumber(size/2, 25, height);
+          canvas.rect(rectWidth, rectHeight)
+            .move(
+              getSafeNumber(x, 0, width),
+              getSafeNumber(y, 0, height)
+            )
             .fill(color)
-            .rotate(rotation, x, y);
+            .rotate(
+              getSafeNumber(rotation, 0, 360),
+              getSafeNumber(x, width/2, width),
+              getSafeNumber(y, height/2, height)
+            );
           break;
         case 2:
-          canvas.polygon(`${x},${y} ${x + size},${y} ${x + size / 2},${y + size}`)
+          const safeX = getSafeNumber(x, 100, width);
+          const safeY = getSafeNumber(y, 100, height);
+          const safeSize = getSafeNumber(size, 100, Math.min(width, height));
+          
+          canvas.polygon([
+            safeX, safeY,
+            safeX + safeSize, safeY,
+            safeX + safeSize/2, safeY + safeSize
+          ].join(' '))
             .fill(color)
             .opacity(0.5);
           break;
@@ -79,20 +104,18 @@ export default function NftByHash({
       .move(width - 198, height - 30)
       .fill('rgba(0, 0, 0, 0.6)');
 
-    
     const svgStr = canvas.svg();
     setSvgString(svgStr);
-    
+
     const blob = new Blob([svgStr], { type: 'image/svg+xml' });
     const url = URL.createObjectURL(blob);
     setSvgUrl(url);
-
 
     return () => {
       canvas.clear();
       URL.revokeObjectURL(url);
     };
-  }, [hash, width, height]);
+  }, [hash]);
 
   const handleDownload = () => {
     if (!svgString) return;
@@ -105,11 +128,14 @@ export default function NftByHash({
     document.body.removeChild(link);
   };
 
-
   return (
-    <div className='flex flex-col gap-2'>
-      <div ref={containerRef} className="aspect-square" />
+    <div className={`flex flex-col gap-2 ${className}`}>
+      <p className="font-medium text-gray-600">{title}</p>
+      <div
+        ref={containerRef}
+        className="self-center w-full aspect-square rounded-xl overflow-hidden"
+      />
       <Button onClick={handleDownload}>Download NFT</Button>
     </div>
-  ) 
+  );
 }

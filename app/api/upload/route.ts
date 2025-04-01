@@ -12,7 +12,7 @@ export async function POST(request: Request) {
   }
 
   const arweaveService = new ArweaveService(arweave);
-  
+
   const stream = new ReadableStream({
     async start(controller) {
       const encoder = new TextEncoder();
@@ -26,51 +26,88 @@ export async function POST(request: Request) {
       const hash = generateSHA256(body.content);
 
       try {
-        sendEvent('progress', { state: `Verifying if hash #${hash.slice(0, 6)} already exists on blockchain...`, progress: 25 });
+        sendEvent("progress", {
+          state: `Verifying if hash #${hash.slice(
+            0,
+            6
+          )} already exists on blockchain...`,
+          progress: 25,
+        });
         const queryResults = await arweaveService.searchForHash(hash);
         if (!!queryResults && queryResults.length > 0) {
-          sendEvent('error', { error: 409, message: `Hash #${hash.slice(0, 6)} already exists on blockchain.`, data: body.content, hash: hash, author: body.author, tx_id: queryResults[0].node.id });
+          sendEvent("error", {
+            error: 409,
+            message: `Hash #${hash.slice(0, 6)} already exists on blockchain.`,
+            data: body.content,
+            date:
+              queryResults.length > 0
+                ? new Date(queryResults[0].node.block.timestamp * 1000).toISOString()
+                : undefined,
+            hash: hash,
+            author: body.author,
+            tx_id: queryResults[0].node.id,
+          });
           controller.close();
           return;
         }
 
-        sendEvent('progress', { state: "Starting transaction...", progress: 50 });
+        sendEvent("progress", {
+          state: "Starting transaction...",
+          progress: 50,
+        });
         const results = await arweaveService.createTransaction(body, hash);
         if (!results) {
-          sendEvent('error', { message: "Cannot create transaction.", error: 400 });
-          controller.close()
+          sendEvent("error", {
+            message: "Cannot create transaction.",
+            error: 400,
+          });
+          controller.close();
           return;
         }
         if (results instanceof Error) {
           throw results;
         }
         const { uploader, transaction } = results;
-        
-        sendEvent('progress', { state: "Uploading data to blockchain...", progress: 50 });
+
+        sendEvent("progress", {
+          state: "Uploading data to blockchain...",
+          progress: 50,
+        });
         while (!uploader.isComplete) {
           await uploader.uploadChunk();
           console.log(
             `uploading chunk: ${uploader.uploadedChunks}/${uploader.totalChunks}`
           );
-          const remainingPercent = 50 + ((50 * uploader.uploadedChunks)/uploader.totalChunks);
-          sendEvent('progress', { state: "Uploading data to blockchain...", progress: remainingPercent });
+          const remainingPercent =
+            50 + (50 * uploader.uploadedChunks) / uploader.totalChunks;
+          sendEvent("progress", {
+            state: "Uploading data to blockchain...",
+            progress: remainingPercent,
+          });
         }
-    
+
         if (process.env.NODE_ENV !== "production") {
           await mine();
         }
 
-        sendEvent('complete', { 
+        sendEvent("complete", {
           success: true,
-          message: `Hash #${hash.slice(0, 6)} successfully inserted on blockchain.`,
+          message: `Hash #${hash.slice(
+            0,
+            6
+          )} successfully inserted on blockchain.`,
           state: "",
           data: body.content,
+          date: new Date().toISOString(),
           hash: hash,
           author: body.author,
           tx_id: transaction.id,
         });
       } catch (error: any) {
-        sendEvent('error', { message: "Unknown error, try to fetch data again.", error: 400 });
+        sendEvent("error", {
+          message: "Unknown error, try to fetch data again.",
+          error: 400,
+        });
         console.error(error);
       } finally {
         controller.close();
@@ -80,9 +117,9 @@ export async function POST(request: Request) {
 
   return new NextResponse(stream, {
     headers: {
-      'Content-Type': 'text/event-stream',
-      'Cache-Control': 'no-cache',
-      'Connection': 'keep-alive',
+      "Content-Type": "text/event-stream",
+      "Cache-Control": "no-cache",
+      Connection: "keep-alive",
     },
   });
 }

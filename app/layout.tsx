@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Footer from "@/components/structures/footer";
 import MainWrapper from "@/components/structures/main";
 import Header from "@/components/structures/header";
+import GradientCanvas from "@/components/canvas/GradientCanvas";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -19,7 +20,8 @@ export default function RootLayout({
       <body
         className={`antialiased`}
       >
-        <div className="min-h-screen flex flex-col">
+        <div className="min-h-screen flex flex-col overflow-x-hidden">
+          <GradientCanvas />
           <Header />
           <MainWrapper>
             {children}
