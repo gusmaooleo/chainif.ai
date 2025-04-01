@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dialog"
 import Image from "next/image"
 
-export default function AboutDialogWrapper({ children }: React.PropsWithChildren) {
+export default function AboutDialog({ children }: React.PropsWithChildren) {
   return (
     <Dialog>
       <DialogTrigger>
