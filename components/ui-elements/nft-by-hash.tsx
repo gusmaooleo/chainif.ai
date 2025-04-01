@@ -7,10 +7,12 @@ import { Button } from '../ui/button';
 type NFTGeneratorProps = {
   hash: string;
   className?: string;
+  title?: string;
 };
 
 export default function NftByHash({
   hash,
+  title,
   className = ''
 }: NFTGeneratorProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -47,21 +49,47 @@ export default function NftByHash({
       const color = `#${hash.substring(16 + i * 6, 22 + i * 6)}`;
       const rotation = parseInt(hash.substring(22 + i * 4, 24 + i * 4), 16) % 360;
 
+      const getSafeNumber = (value: number, fallback: number, max?: number) => {
+        const num = isNaN(value) ? fallback : value;
+        return max ? Math.min(num, max) : num;
+      };
+      
       switch (shapeType) {
         case 0:
-          canvas.circle(size)
-            .center(x, y)
+          const circleSize = getSafeNumber(size, 50, width);
+          canvas.circle(circleSize)
+            .center(
+              getSafeNumber(x, width/2, width),
+              getSafeNumber(y, height/2, height)
+            )
             .fill(color)
             .opacity(0.7);
           break;
         case 1:
-          canvas.rect(size, size / 2)
-            .move(x, y)
+          const rectWidth = getSafeNumber(size, 50, width);
+          const rectHeight = getSafeNumber(size/2, 25, height);
+          canvas.rect(rectWidth, rectHeight)
+            .move(
+              getSafeNumber(x, 0, width),
+              getSafeNumber(y, 0, height)
+            )
             .fill(color)
-            .rotate(rotation, x, y);
+            .rotate(
+              getSafeNumber(rotation, 0, 360),
+              getSafeNumber(x, width/2, width),
+              getSafeNumber(y, height/2, height)
+            );
           break;
         case 2:
-          canvas.polygon(`${x},${y} ${x + size},${y} ${x + size / 2},${y + size}`)
+          const safeX = getSafeNumber(x, 100, width);
+          const safeY = getSafeNumber(y, 100, height);
+          const safeSize = getSafeNumber(size, 100, Math.min(width, height));
+          
+          canvas.polygon([
+            safeX, safeY,
+            safeX + safeSize, safeY,
+            safeX + safeSize/2, safeY + safeSize
+          ].join(' '))
             .fill(color)
             .opacity(0.5);
           break;
@@ -102,6 +130,7 @@ export default function NftByHash({
 
   return (
     <div className={`flex flex-col gap-2 ${className}`}>
+      <p className="font-medium text-gray-600">{title}</p>
       <div
         ref={containerRef}
         className="self-center w-full aspect-square rounded-xl overflow-hidden"

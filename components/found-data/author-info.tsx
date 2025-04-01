@@ -20,8 +20,8 @@ export default function AuthorInfo({ author }: { author?: string }) {
   };
   
   return (
-    <FoundDataElement title="Author:" classname="w-auto">
-      <div className="flex items-center flex-row gap-2">
+    <FoundDataElement title="Author:">
+      <div className="flex items-center gap-2">
         <Image src={getAuthorIcon()[0]} alt="Author" width={25} height={25} />
         <p className="truncate text-sm text-gray-600 capitalize">
           {getAuthorIcon()[1]}

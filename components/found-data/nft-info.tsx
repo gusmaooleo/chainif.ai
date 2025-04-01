@@ -3,8 +3,8 @@ import FoundDataElement from "./found-data-elements";
 
 export default function NftInfo({hash}: {hash: string}) {
   return (
-    <FoundDataElement title="NFT:" classname="sm:w-[350px] w-full">
-      <NftByHash hash={hash} className="rounded-lg" />
+    <FoundDataElement classname="w-full self-center">
+      <NftByHash hash={hash} className="self-center rounded-lg w-full max-w-[350px]" title="NFT:" />
     </FoundDataElement>
   )
 }

@@ -12,19 +12,13 @@ export default function FoundData({ data }: { data: SSEEventData | null }) {
     return (
       <>
         <FoundFeedback title={data.message} tx_id={data.tx_id} />
-        <div className="flex flex-col md:flex-row h-full py-4 px-4 xl:py-10 gap-4 md:gap-10">
-          <div className="flex flex-row md:flex-col justify-between w-full md:gap-0">
+        <div className="grid grid-cols-1 md:grid-cols-[350px_1fr] gap-4 md:gap-10 px-4 py-6 items-start h-full items-stretch min-h-[400px]">
+          <div className="flex flex-col gap-4 h-full justify-between">
             <NftInfo hash={data.hash} />
-
-            <div className="flex flex-col md:gap-10 justify-between">
-              <div className="w-[140px]">
-                <ChecksumInfo hash={data.hash} />
-              </div>
-
-              <div className="flex flex-col md:flex-row justify-between w-full">
-                <AuthorInfo author={data.author} />
-                <DateInfo date={data.date} />
-              </div>
+            <ChecksumInfo hash={data.hash} />
+            <div className="flex flex-row justify-between gap-4">
+              <AuthorInfo author={data.author} />
+              <DateInfo date={data.date} />
             </div>
           </div>
 
