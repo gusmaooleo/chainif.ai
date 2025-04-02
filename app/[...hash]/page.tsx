@@ -21,15 +21,13 @@ export default async function DynamicHashPage({ params }: DynamicHashPageType) {
   return (
     <div className="flex flex-col h-auto items-center justify-evenly">
       {!hashValue && (
-        <div className="flex items-center w-screen flex-col w-[30rem]">
-          <div className="flex flex-col items-center">
-            <DefaultFeedback />
-          </div>
-        </div>
+        <ContentWrapper classname_f="w-[30rem]">
+          <DefaultFeedback />
+        </ContentWrapper>
       )}
       <FormProviderWrapper>
         {hashValue && (
-          <ContentWrapper>
+          <ContentWrapper classname_f="h-full" classname_c="h-full">
             <FeedbackContent hashValue={hashValue} />
           </ContentWrapper>
         )}

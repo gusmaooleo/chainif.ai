@@ -2,28 +2,17 @@
 
 import { useCallback, useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Link from "next/link";
 import getFeedback from "./actions/actions";
-import UpDataForm from "../forms/up-data-form";
-import { Button } from "../ui/button";
-import { RootState } from "@/lib/store";
+import { RootState } from "@/utils/store";
 import { setFeedbackValue } from "@/lib/slices/form-slice";
 import DefaultLoading from "../loading/default-loading";
-import { ErrorFeedback, InvalidFeedback, NotFoundFeedback } from "./feedback-states";
+import {
+  ErrorFeedback,
+  InvalidFeedback,
+  NotFoundFeedback,
+} from "./feedback-states";
 import { setSSEEvent } from "@/lib/slices/sse-slice";
 import FoundData from "../found-data/found-data";
-
-const MemoizedNotFoundFeedback = () => (
-  <>
-    <NotFoundFeedback />
-    <div className="flex flex-row gap-4 mt-10">
-      <Link href="/">
-        <Button variant='outline'>Cancel</Button>
-      </Link>
-      <UpDataForm>Up to blockchain</UpDataForm>
-    </div>
-  </>
-);
 
 export default function FeedbackContent({ hashValue }: { hashValue: string }) {
   const { feedbackValue } = useSelector((state: RootState) => state.form);
@@ -32,20 +21,39 @@ export default function FeedbackContent({ hashValue }: { hashValue: string }) {
 
   const fetchFeedbackData = useCallback(async () => {
     if (!hashValue) return;
+    dispatch(setFeedbackValue("Fetching"));
     
-    dispatch(setFeedbackValue('Fetching'));
     try {
       const fetchFeedback = await getFeedback(hashValue);
       dispatch(setFeedbackValue(fetchFeedback.feedback));
-      if (fetchFeedback.feedback === 'Found' && fetchFeedback.data) {
-        dispatch(setSSEEvent({ type: 'complete', data: fetchFeedback.data }));
+      if (
+        fetchFeedback.feedback === "Found" &&
+        fetchFeedback.data &&
+        fetchFeedback.data.type === "complete"
+      ) {
+        const recievedData = fetchFeedback.data;
+        dispatch(
+          setSSEEvent({
+            type: "complete",
+            data: recievedData.data,
+            hash: recievedData.hash,
+            success: recievedData.success,
+            message: recievedData.message,
+            state: recievedData.state,
+            date: recievedData.date,
+            author: recievedData.author,
+            tx_id: recievedData.tx_id,
+          })
+        );
       }
-    } catch (error) {
-      dispatch(setFeedbackValue('Error'));
-      dispatch(setSSEEvent({ 
-        type: 'error', 
-        data: { message: error instanceof Error ? error.message : 'Unknown error' }
-      }));
+    } catch (error: any) {
+      dispatch(setFeedbackValue("Error"));
+      dispatch(
+        setSSEEvent({
+          type: "error",
+          message: error.message,
+        })
+      );
     }
   }, [hashValue, dispatch]);
 
@@ -55,18 +63,21 @@ export default function FeedbackContent({ hashValue }: { hashValue: string }) {
 
   const renderedContent = useMemo(() => {
     if (!hashValue) return null;
-    
-    switch(feedbackValue) {
-      case 'Found':
+
+    switch (feedbackValue) {
+      case "Found":
         return <FoundData data={eventData} />;
-      case 'Not-Found':
-        return <MemoizedNotFoundFeedback />;
-      case 'Invalid':
+      case "Not-Found":
+        return <NotFoundFeedback />;
+      case "Invalid":
         return <InvalidFeedback />;
-      case 'Fetching':
+      case "Fetching":
         return <DefaultLoading />;
-      case 'Error':
-        return <ErrorFeedback error={eventData?.message} />;
+      case "Error":
+        if (eventData?.type === 'error') {
+          return <ErrorFeedback error={eventData?.message} />;
+        }
+        return <ErrorFeedback error="Unknown errror."/>
       default:
         return null;
     }

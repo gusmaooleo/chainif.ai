@@ -1,4 +1,4 @@
-import { SSEEventData } from "@/types/sseevent";
+import { SSEEvent } from "@/types/sseevent";
 import { FoundFeedback } from "../feedback/feedback-states";
 import NftInfo from "./nft-info";
 import ChecksumInfo from "./checksum-info";
@@ -7,8 +7,8 @@ import DateInfo from "./date-info";
 import DataInfo from "./data-info";
 import { notFound } from "next/navigation";
 
-export default function FoundData({ data }: { data: SSEEventData | null }) {
-  if (data && data.hash) {
+export default function FoundData({ data }: { data: SSEEvent | null }) {
+  if (data && data.type === 'complete') {
     return (
       <>
         <FoundFeedback title={data.message} tx_id={data.tx_id} />

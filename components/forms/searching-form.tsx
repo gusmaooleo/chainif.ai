@@ -5,11 +5,12 @@ import { useParams, useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import Image from "next/image";
 import { Input } from "../ui/input";
-import { generateSHA256, validateSHA256 } from "@/lib/sha-256-utils";
+import { generateSHA256, validateSHA256 } from "@/utils/sha-256-utils";
 import { setInputValue } from "@/lib/slices/form-slice";
-import { RootState } from "@/lib/store";
+import { RootState } from "@/utils/store";
+import React from "react";
 
-const SubmitButton = ({ isValidHash }: { isValidHash: boolean }) => (
+const SubmitButton = React.memo(({ isValidHash }: { isValidHash: boolean }) => (
   <button type="submit" className="relative ml-[-2rem]">
     <Image
       src={isValidHash ? "/svg-logo.svg" : "/svg-logo-bw.svg"}
@@ -20,13 +21,13 @@ const SubmitButton = ({ isValidHash }: { isValidHash: boolean }) => (
       priority
     />
   </button>
-);
+));
 
 export default function SearchingForm() {
-  const router = useRouter();
   const { inputValue } = useSelector((state: RootState) => state.form);
-  const dispatch = useDispatch();
   const { hash } = useParams();
+  const router = useRouter();
+  const dispatch = useDispatch();
 
   const [localInput, setLocalInput] = useState(inputValue);
   const isValidHash = useMemo(() => validateSHA256(localInput), [localInput]);

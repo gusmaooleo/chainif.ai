@@ -1,4 +1,4 @@
-import { standardDateConvertion } from "@/lib/parseISODate";
+import { standardDateConvertion } from "@/utils/parseISODate";
 import FoundDataElement from "./found-data-elements";
 
 export default function DateInfo({ date }: { date?: string }) {

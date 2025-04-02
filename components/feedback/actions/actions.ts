@@ -1,7 +1,7 @@
 "use server";
 
-import { ArweaveService } from "../../../lib/services/arweave";
-import { validateSHA256 } from "@/lib/sha-256-utils";
+import { ArweaveService } from "../../../lib/services/ArweaveService";
+import { validateSHA256 } from "@/utils/sha-256-utils";
 import { ResponseType } from "@/types/response";
 import arweave from "../../../lib/config/arweave";
 
@@ -27,7 +27,7 @@ export default async function getFeedback(hashValue: string): Promise<ResponseTy
   if (!validateSHA256(hashValue)) return { feedback: 'Invalid' };
 
   const queryResult = await searchForHash(hashValue);
-  const hasFoundValues = !!queryResult?.foundValues && queryResult.foundValues.length > 0;
+  const hasFoundValues = queryResult && queryResult.foundValues && queryResult.foundValues.length > 0;
 
   const firstFoundValue = queryResult?.foundValues?.[0];
   const date = queryResult && queryResult.foundValues.length > 0 ? new Date(queryResult?.foundValues[0].node.block.timestamp * 1000).toISOString() : undefined;
@@ -38,7 +38,10 @@ export default async function getFeedback(hashValue: string): Promise<ResponseTy
   return {
     feedback: hasFoundValues ? 'Found' : 'Not-Found',
     data: {
+      type: 'complete',
       message: `We find the content for #${hashValue.slice(0, 6)} hash.`,
+      success: true,
+      state: '',
       tx_id: txId,
       data: queryResult?.data,
       hash: hashValue,

@@ -1,7 +1,7 @@
 import { FeedbackType } from "./feedback";
-import { SSEEventData } from "./sseevent";
+import { SSEEvent } from "./sseevent";
 
 export type ResponseType = {
   feedback: FeedbackType;
-  data?: SSEEventData;
+  data?: SSEEvent;
 }
