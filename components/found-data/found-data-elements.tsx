@@ -9,7 +9,7 @@ export default function FoundDataElement({
 }) {
   return (
     <div className={`flex flex-col gap-2 ${classname}`}>
-      <p className="font-medium text-gray-600">{title}</p>
+      {!!title && <p className="font-medium text-gray-600">{title}</p>}
       {children}
     </div>
   );
