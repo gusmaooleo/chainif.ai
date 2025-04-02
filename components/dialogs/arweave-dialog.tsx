@@ -6,7 +6,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { ArweaveService } from "@/lib/services/arweave";
+import { ArweaveService } from "@/lib/services/ArweaveService";
 import arweaveimg from "@/public/arweave-logo.svg";
 import Image from "next/image";
 import arweave from "@/lib/config/arweave";

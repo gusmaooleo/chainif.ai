@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import Footer from "@/components/structures/footer";
-import MainWrapper from "@/components/structures/main";
-import Header from "@/components/structures/header";
+import Footer from "@/components/footer";
+import MainWrapper from "@/components/main";
+import Header from "@/components/header";
 import GradientCanvas from "@/components/canvas/GradientCanvas";
 import "./globals.css";
 

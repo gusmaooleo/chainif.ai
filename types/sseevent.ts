@@ -1,14 +1,32 @@
 
-export type SSEEventType = 'progress' | 'error' | 'complete'; 
-export type SSEEventData = {
-  message?: string;
-  progress?: number;
-  state?: string;
-  error?: number;
-  author?: string;
+export interface SSEBaseEvent {
+  type: SSEEventType;
+}
+
+export interface SSEProgressEvent extends SSEBaseEvent {
+  type: 'progress';
+  state: string;
+  progress: number;
+}
+
+export interface SSECompleteEvent extends SSEBaseEvent {
+  type: 'complete';
   success?: boolean;
-  hash?: string;
-  data?: any;
+  message?: string;
+  state?: string;
+  data: string;
   date?: string;
+  hash: string;
+  author?: string;
   tx_id?: string;
-};
+}
+
+export interface SSEErrorEvent extends SSEBaseEvent {
+  type: 'error';
+  message: string;
+  error?: number;
+  date?: string;
+}
+
+export type SSEEvent = SSEProgressEvent | SSECompleteEvent | SSEErrorEvent;
+export type SSEEventType = 'progress' | 'error' | 'complete'; 

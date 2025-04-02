@@ -4,7 +4,7 @@ import { TransactionUploader } from "arweave/node/lib/transaction-uploader";
 import { hashFormSchema } from "../validation/hashform";
 import Transaction from "arweave/node/lib/transaction";
 import Arweave from "arweave";
-import { getTransactionsByHashQuery } from "./queries/getTransactionByHash";
+import { getTransactionsByHashQuery } from "../graphql/getTransactionByHash";
 
 declare global {
   var arweaveKey: any;

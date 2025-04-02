@@ -3,10 +3,8 @@ import github from '@/public/github-logo.svg';
 import arweave from '@/public/arweave-logo-rs.svg';
 import about from '@/public/about.svg';
 import Link from "next/link";
-import AboutDialog from "../dialogs/about-dialog";
-import ArweaveDialog from "../dialogs/arweave-dialog";
-import { faMoon } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import AboutDialog from "./dialogs/about-dialog";
+import ArweaveDialog from "./dialogs/arweave-dialog";
 
 export default function Footer() {
   return (
@@ -21,7 +19,6 @@ export default function Footer() {
         <AboutDialog>
           <Image src={about} alt="about" className="cursor-pointer" width={22} height={22} />
         </AboutDialog>
-        <FontAwesomeIcon icon={faMoon} className="text-gray-400" width={22} height={22} />
       </div>
     </footer>
   )

@@ -3,6 +3,10 @@ import { faCircleXmark } from "@fortawesome/free-solid-svg-icons/faCircleXmark";
 import { faArrowUpRightFromSquare } from "@fortawesome/free-solid-svg-icons/faArrowUpRightFromSquare";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
+import Link from "next/link";
+import { Button } from "../ui/button";
+import UpDataForm from "../forms/up-data-form";
+import React from "react";
 
 export function DefaultFeedback() {
   return (
@@ -27,7 +31,10 @@ export function FoundFeedback({
     <div className="flex items-center flex-row gap-2 pr-4 pl-4 md:p-0">
       <h1 className="text-xl md:text-2xl text-gray-600">{title}</h1>
       <div className="flex flex-col md:flex-row gap-3 md:ml-4 items-center">
-        <FontAwesomeIcon icon={faCircleCheck} className="text-success text-xl" />
+        <FontAwesomeIcon
+          icon={faCircleCheck}
+          className="text-success text-xl"
+        />
         <a
           href={`https://viewblock.io/arweave/tx/${tx_id}`}
           target="_blank"
@@ -43,25 +50,33 @@ export function FoundFeedback({
   );
 }
 
-export function NotFoundFeedback() {
+export const NotFoundFeedback = React.memo(() => {
   return (
-    <div className="flex items-center flex-col w-[20rem] gap-2">
-      <Image
-        src="/not-found-feedback.svg"
-        alt="not-found"
-        height={105}
-        width={200}
-      />
-      <h1 className="text-xl text-gray-600 mt-5">
-        We couldn&apos;t find the content
-      </h1>
-      <p className="text-center text-gray-400">
-        Upload this content to the Arweave blockchain or search for another
-        hash.
-      </p>
-    </div>
+    <>
+      <div className="flex items-center flex-col w-[20rem] gap-2">
+        <Image
+          src="/not-found-feedback.svg"
+          alt="not-found"
+          height={105}
+          width={200}
+        />
+        <h1 className="text-xl text-gray-600 mt-5">
+          We couldn&apos;t find the content
+        </h1>
+        <p className="text-center text-gray-400">
+          Upload this content to the Arweave blockchain or search for another
+          hash.
+        </p>
+      </div>
+      <div className="flex flex-row gap-4 mt-10">
+        <Link href="/">
+          <Button variant="outline">Cancel</Button>
+        </Link>
+        <UpDataForm>Up to blockchain</UpDataForm>
+      </div>
+    </>
   );
-}
+})
 
 export function InvalidFeedback() {
   return (

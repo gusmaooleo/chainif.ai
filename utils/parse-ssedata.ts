@@ -1,6 +1,6 @@
-import { SSEEventData } from "@/types/sseevent";
+import { SSEEvent } from "@/types/sseevent";
 
-export function parseSSEData(lines: string[]): SSEEventData {
+export function parseSSEData(lines: string[]): SSEEvent {
   const dataLines = lines.filter(line => line.startsWith('data:'));
   const combinedData = dataLines.map(line => line.slice(5)).join('\n');
   
@@ -14,9 +14,9 @@ export function parseSSEData(lines: string[]): SSEEventData {
     
     const jsonContent = combinedData.slice(firstBrace, lastBrace + 1);
     
-    const parsedData = JSON.parse(jsonContent) as SSEEventData;
+    const parsedData = JSON.parse(jsonContent) as SSEEvent;
     
-    if (typeof parsedData.data === 'string') {
+    if ((parsedData.type === 'complete') && typeof parsedData.data === 'string') {
       parsedData.data = parsedData.data
         .replace(/\\n/g, '\n')
         .replace(/\\r/g, '\r')
@@ -27,12 +27,8 @@ export function parseSSEData(lines: string[]): SSEEventData {
   } catch (error) {
     console.error('SSE Parsing Error:', error);
     return {
-      success: false,
-      message: 'Parsing error',
-      data: combinedData,
-      hash: '',
-      author: '',
-      tx_id: ''
+      type: 'error',
+      message: 'Error when receiving data',
     };
   }
 }
