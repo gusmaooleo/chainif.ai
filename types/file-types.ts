@@ -1,0 +1,1 @@
+export type SupportedFileTypes = "text/html" | "text/plain" | "application/pdf"
