@@ -12,7 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   setFeedbackValue,
 } from "@/lib/slices/form-slice";
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 import { FormEvent } from "react";
 import { optionsList } from "@/lib/constants/originOptions";
 import { generateSHA256 } from "@/utils/sha-256-utils";

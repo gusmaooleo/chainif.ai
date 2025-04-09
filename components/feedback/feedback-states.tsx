@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "../ui/button";
-import UpDataForm from "../forms/up-data-form";
+import UpDataForm from "../forms/up-data-form/up-data-form";
 import React from "react";
 
 export function DefaultFeedback() {

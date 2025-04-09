@@ -10,6 +10,7 @@ type NFTGeneratorProps = {
   title?: string;
 };
 
+// TODO: send this logic to backend
 export default function NftByHash({
   hash,
   title,

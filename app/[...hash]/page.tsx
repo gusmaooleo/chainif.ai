@@ -1,5 +1,5 @@
 import ShowEquivalentHash from "@/components/ui-elements/show-equivalent-hash";
-import SearchingForm from "@/components/forms/searching-form";
+import SearchingForm from "@/components/forms/search-form/searching-form";
 import FormProviderWrapper from "@/components/wrappers/form-provider-wrapper";
 import ContentWrapper from "@/components/wrappers/content-wrapper";
 import FeedbackContent from "@/components/feedback/feedback-content";

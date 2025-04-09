@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { setInputValue, setOriginValue } from "@/lib/slices/form-slice";
 import { DialogClose, DialogFooter } from "@/components/ui/dialog";
 import AuthorInput from "./author-input";
-import OriginDropdownSelector from "@/components/forms/assets/origin-dropdown-selector";
+import OriginDropdownSelector from "@/components/forms/up-data-form/assets/origin-dropdown-selector";
 import ContentTextarea from "./content-textarea";
 import { FormEvent } from "react";
 
