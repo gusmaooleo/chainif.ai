@@ -15,10 +15,10 @@ export default function UpArchiveButton({
     <div
       {...getRootProps({
         className:
-          "flex items-center justify-center min-w-[2.25rem] bg-gray-600 rounded-full hover:bg-gray-500 transition dropzone relative cursor-pointer",
+          "flex items-center justify-center min-w-[2.25rem] bg-gray-000 rounded-full hover:bg-gray-100 transition dropzone relative cursor-pointer border border-gray-200",
       })}
     >
-      <FontAwesomeIcon icon={faUpload} color="#fdfdfd" />
+      <FontAwesomeIcon icon={faUpload} className="text-gray-500" />
       <input className="absolute w-full h-full z-[100]" {...getInputProps()} />
     </div>
   );

@@ -20,6 +20,7 @@ export default async function DynamicHashPage({ params }: DynamicHashPageType) {
 
   return (
     <div className="flex flex-col h-auto items-center justify-evenly">
+      {/* Keeps SEO advantages. */}
       {!hashValue && (
         <ContentWrapper classname_f="w-[30rem]">
           <DefaultFeedback />
