@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import getFeedback from "./actions/actions";
-import { RootState } from "@/utils/store";
+import { RootState } from "@/lib/config/store";
 import { setFeedbackValue } from "@/lib/slices/form-slice";
 import DefaultLoading from "../loading/default-loading";
 import {

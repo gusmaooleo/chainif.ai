@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { optionsList } from "../constants/originOptions";
 import { FeedbackType } from "@/types/feedback";
+import { SerializableFile } from "@/types/serializable-file";
 
 interface Origin {
   icon: string;
@@ -9,6 +10,7 @@ interface Origin {
 
 interface FormState {
   inputValue: string;
+  fileInputValue: SerializableFile | null;
   authorValue: string;
   originValue: Origin;
   feedbackValue: FeedbackType
@@ -16,6 +18,7 @@ interface FormState {
 
 const initialState: FormState = {
   inputValue: "",
+  fileInputValue: null,
   authorValue: "",
   feedbackValue: 'Default',
   originValue: optionsList.Authorial,
@@ -28,6 +31,9 @@ export const formSlice = createSlice({
     setInputValue: (state, action: PayloadAction<string>) => {
       state.inputValue = action.payload;
     },
+    setFileInputValue: (state, action: PayloadAction<SerializableFile | null>) => {
+      state.fileInputValue = action.payload ? {...action.payload} : null;
+    },
     setAuthorValue: (state, action: PayloadAction<string>) => {
       state.authorValue = action.payload;
     },
@@ -39,6 +45,7 @@ export const formSlice = createSlice({
     },
     clearForm: (state) => {
       state.inputValue = "";
+      state.fileInputValue = null;
       state.authorValue = "";
       state.feedbackValue = 'Default';
       state.originValue = optionsList.Authorial;
@@ -46,5 +53,5 @@ export const formSlice = createSlice({
   },
 });
 
-export const { setInputValue, setOriginValue, setFeedbackValue, setAuthorValue, clearForm } = formSlice.actions;
+export const { setInputValue, setFileInputValue, setOriginValue, setFeedbackValue, setAuthorValue, clearForm } = formSlice.actions;
 export default formSlice.reducer;

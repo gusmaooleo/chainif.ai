@@ -1,84 +1,94 @@
 "use client";
 
-import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
+import { FormEvent, useCallback, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
-import { FileWithPath, useDropzone } from "react-dropzone";
-import { RootState } from "@/utils/store";
-import { setInputValue } from "@/lib/slices/form-slice";
+import { useDropzone } from "react-dropzone";
+import { RootState } from "@/lib/config/store";
+import { setInputValue, setFileInputValue } from "@/lib/slices/form-slice";
 import { generateSHA256, validateSHA256 } from "@/utils/sha-256-utils";
 import { SearchInput } from "./assets/search-input";
 import { SearchButton } from "./assets/search-button";
 import { FileUploadSection } from "./assets/file-upload-section";
+import { buildSerializableFile } from "@/utils/file-int8array-utils";
 
 export default function SearchingForm() {
-  const { inputValue } = useSelector((state: RootState) => state.form);
-  const dispatch = useDispatch();
-
-  const { hash } = useParams();
   const router = useRouter();
+  const { hash } = useParams();
+  const dispatch = useDispatch();
+  
+  const { inputValue, fileInputValue } = useSelector((state: RootState) => state.form);
+  const isValidHash = useMemo(() => validateSHA256(inputValue), [inputValue]);
 
-  const [files, setFiles] = useState<FileWithPath[]>([]);
-  const [localInput, setLocalInput] = useState(inputValue);
-
-  const isValidHash = useMemo(() => validateSHA256(localInput), [localInput]);
+  const onDrop = useCallback(async (acceptedFiles: File[]) => {
+    if (acceptedFiles.length > 0) {
+      const serializableFile = await buildSerializableFile(acceptedFiles[0]);
+      dispatch(setFileInputValue(serializableFile));
+      dispatch(setInputValue(""));
+    }
+  }, [dispatch]);
 
   const { getRootProps, getInputProps } = useDropzone({
-    onDrop: useCallback((acceptedFiles: File[]) => {
-      setFiles((prevFiles) => [...prevFiles, ...acceptedFiles]);
-    }, []),
+    onDrop,
+    maxFiles: 1,
+    accept: {
+      'application/pdf': ['.pdf'],
+      'image/*': ['.png', '.jpg', '.jpeg' ,'.svg']
+    },
+    maxSize: 5 * (1024 * 1024), //5mb
+    onDropRejected: () => {
+      // TODO: implement toast
+      console.log("File is too large")
+    }
   });
-  const clearAllFiles = useCallback(() => setFiles([]), []);
 
-  const updateReduxInput = useCallback(
-    (value: string) => dispatch(setInputValue(value)),
-    [dispatch]
-  );
+  const clearAllFiles = useCallback(() => {
+    dispatch(setFileInputValue(null));
+  }, [dispatch]);
 
   const handleInputChange = useCallback(
     (value: string) => {
-      setLocalInput(value);
-      updateReduxInput(value);
+      dispatch(setInputValue(value));
+      if (fileInputValue) {
+        dispatch(setFileInputValue(null));
+      }
     },
-    [updateReduxInput]
+    [dispatch, fileInputValue]
   );
 
   const handleSubmit = useCallback(
     async (e: FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-      if (!localInput && !files) return;
-
-      let genHash: string;
-      if (files.length > 0) {
-        const file = files[0];
-        genHash = await generateSHA256(file);
-      } else {
-        genHash = isValidHash ? localInput : (await generateSHA256(localInput));
-      }
       
-      if (hash && genHash === hash[0]) return;
-      router.push(`/${genHash}`);
+      if (!inputValue && !fileInputValue) return;
+      if (hash && inputValue === hash[0]) return;
+
+      const hashToUse = fileInputValue 
+        ? generateSHA256(fileInputValue)
+        : isValidHash ? inputValue : generateSHA256(inputValue);
+
+      router.push(`/${hashToUse}`);
     },
-    [localInput, isValidHash, hash, router, files]
+    [inputValue, fileInputValue, isValidHash, hash, router]
   );
 
   return (
     <form className="flex flex-col gap-10" onSubmit={handleSubmit}>
       <div className="flex flex-row gap-2">
         <SearchInput
-          value={localInput}
+          value={inputValue}
           isValidHash={isValidHash}
           onChange={handleInputChange}
-          disabled={files.length > 0}
+          disabled={!!fileInputValue}
         />
         <FileUploadSection
-          files={files}
+          file={fileInputValue}
           getRootProps={getRootProps}
           getInputProps={getInputProps}
           clearFiles={clearAllFiles}
         />
       </div>
-      <SearchButton />
+      <SearchButton isDisabled={!inputValue && !fileInputValue} />
     </form>
   );
 }

@@ -1,7 +1,7 @@
 import { ArweaveCredentials } from "@/types/arweave-credentials";
-import { HashForm } from "@/types/hashform";
+import { RequestForm } from "@/types/form";
 import { TransactionUploader } from "arweave/node/lib/transaction-uploader";
-import { hashFormSchema } from "../validation/hashform";
+import { RequestFormSchema } from "../validation/hashform";
 import Transaction from "arweave/node/lib/transaction";
 import Arweave from "arweave";
 import { getTransactionsByHashQuery } from "../graphql/getTransactionByHash";
@@ -57,22 +57,33 @@ export class ArweaveService {
   };
 
   createTransaction = async (
-    formData: HashForm,
+    formData: RequestForm,
     hash: string
   ): Promise<
     { uploader: TransactionUploader; transaction: Transaction } | Error
   > => {
     try {
-      await hashFormSchema.validate(formData);
+      await RequestFormSchema.validate(formData);
+
       const { key } = await this.getArweaveKey();
+      const data =
+        typeof formData.content === "string"
+          ? formData.content
+          : new Uint8Array(formData.content.data);
       let transaction = await this.instance.createTransaction(
         {
-          data: formData.content,
+          data: data,
         },
         key
       );
 
-      transaction.addTag("Content-Type", "text/plain");
+      if (typeof formData.content === 'string') {
+        transaction.addTag("Content-Type", "text/plain");
+      } else {
+        transaction.addTag("Content-Type", formData.content.type);
+        transaction.addTag("File-Name", formData.content.name);
+      }
+      
       transaction.addTag("Author", formData.author);
       transaction.addTag("Hash", hash);
 

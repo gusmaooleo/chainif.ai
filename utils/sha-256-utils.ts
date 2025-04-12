@@ -1,6 +1,8 @@
+import { SerializableFile } from "@/types/serializable-file";
 import crypto from "crypto";
 
-const generateSHA256 = async (content: string | File): Promise<string> => {
+
+const generateSHA256 = (content: string | SerializableFile): string => {
   if (typeof content === 'string' && content.length === 0) {
     return "";
   }
@@ -8,9 +10,8 @@ const generateSHA256 = async (content: string | File): Promise<string> => {
   
   if (typeof content === 'string') {
     hash.update(content, 'utf-8');
-  } else if (content instanceof File) {
-    const arrayBuffer = await content.arrayBuffer();
-    hash.update(new Uint8Array(arrayBuffer));
+  } else if (content) {
+    hash.update(new Uint8Array(content.data));
   } else {
     throw new Error('Unsupported content type for SHA256 generation');
   }

@@ -7,7 +7,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { RootState } from "@/utils/store";
+import { RootState } from "@/lib/config/store";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setFeedbackValue,
@@ -21,7 +21,7 @@ import FormContent from "./assets/form-content";
 import { ProcessSSEService } from "@/lib/services/ProcessSSEService";
 
 export default function UpDataForm({ children }: React.PropsWithChildren) {
-  const { inputValue, originValue, authorValue } = useSelector(
+  const { fileInputValue, inputValue, originValue, authorValue } = useSelector(
     (state: RootState) => state.form
   );
   const dispatch = useDispatch();
@@ -31,8 +31,8 @@ export default function UpDataForm({ children }: React.PropsWithChildren) {
     
     dispatch(setFeedbackValue("Fetching"));
     const author = getAuthorName(originValue.value, authorValue);
-    const content = inputValue;
-    const hash = await generateSHA256(content);
+    const content = fileInputValue ? fileInputValue : inputValue;
+    const hash = generateSHA256(content);
     window.history.pushState(null, "", `/${hash}`);
   
     try {

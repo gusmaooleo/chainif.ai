@@ -1,34 +1,42 @@
 import { SSEEvent } from "@/types/sseevent";
 
-export function parseSSEData(lines: string[]): SSEEvent {
-  const dataLines = lines.filter(line => line.startsWith('data:'));
-  const combinedData = dataLines.map(line => line.slice(5)).join('\n');
-  
+export function parseSSEData(lines: string[]): SSEEvent | null {
+  // Filtra linhas vazias e comments
+  const validLines = lines.filter(line => 
+      line.startsWith('data:') || line.startsWith('event:') || line === ''
+  );
+
+  // Se não tem dados completos, retorna null
+  if (!validLines.some(line => line.startsWith('data:'))) {
+      return null;
+  }
+
   try {
-    const firstBrace = combinedData.indexOf('{');
-    const lastBrace = combinedData.lastIndexOf('}');
-    
-    if (firstBrace === -1 || lastBrace === -1) {
-      throw new Error('Invalid JSON structure');
-    }
-    
-    const jsonContent = combinedData.slice(firstBrace, lastBrace + 1);
-    
-    const parsedData = JSON.parse(jsonContent) as SSEEvent;
-    
-    if ((parsedData.type === 'complete') && typeof parsedData.data === 'string') {
-      parsedData.data = parsedData.data
-        .replace(/\\n/g, '\n')
-        .replace(/\\r/g, '\r')
-        .replace(/\\t/g, '\t');
-    }
-    
-    return parsedData;
+      const jsonStr = validLines
+          .filter(line => line.startsWith('data:'))
+          .map(line => line.slice(5).trim())
+          .join('');
+
+      // Verifica se temos um JSON completo
+      if (!(jsonStr.includes('{') && jsonStr.includes('}'))) {
+          return null;
+      }
+
+      const parsed = JSON.parse(jsonStr) as SSEEvent;
+      
+      if (parsed.type === 'complete' && typeof parsed.data === 'string') {
+          parsed.data = parsed.data
+              .replace(/\\n/g, '\n')
+              .replace(/\\r/g, '\r')
+              .replace(/\\t/g, '\t');
+      }
+      
+      return parsed;
   } catch (error) {
-    console.error('SSE Parsing Error:', error);
-    return {
-      type: 'error',
-      message: 'Error when receiving data',
-    };
+      console.error('SSE Parsing Error:', error);
+      return {
+          type: 'error',
+          message: 'Error when receiving data',
+      };
   }
 }

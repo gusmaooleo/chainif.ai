@@ -1,6 +1,5 @@
-import { SupportedFileTypes } from "@/types/file-types";
+import { SerializableFile, SupportedFileTypes, SupportedMimeTypes } from "@/types/serializable-file";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { FileWithPath } from "react-dropzone";
 import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { faFile } from "@fortawesome/free-solid-svg-icons/faFile";
 import { faFilePdf } from "@fortawesome/free-solid-svg-icons/faFilePdf";
@@ -16,22 +15,22 @@ import {
 
 
 export default function AcceptedFiles({
-  files,
+  file,
   clearFiles,
 }: {
-  files: readonly FileWithPath[];
+  file: SerializableFile;
   clearFiles: () => void;
 }) {
   let icon: IconDefinition;
 
-  switch (files[0].type as SupportedFileTypes) {
-    case "text/html":
+  switch (file.type as SupportedFileTypes) {
+    case SupportedMimeTypes.HTML:
       icon = faFileCode;
       break;
-    case "application/pdf":
+    case SupportedMimeTypes.PDF:
       icon = faFilePdf;
       break;
-    case "text/plain":
+    case SupportedMimeTypes.TEXT:
       icon = faFileLines;
       break;
     default:
@@ -56,7 +55,7 @@ export default function AcceptedFiles({
         </TooltipTrigger>
         <TooltipContent side="bottom">
           <p>
-            {files[0].name}
+            {file.name}
           </p>
         </TooltipContent>
       </Tooltip>

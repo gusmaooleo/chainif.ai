@@ -1,3 +1,4 @@
+import { SerializableFile } from "./serializable-file";
 
 export interface SSEBaseEvent {
   type: SSEEventType;
@@ -14,7 +15,7 @@ export interface SSECompleteEvent extends SSEBaseEvent {
   success?: boolean;
   message?: string;
   state?: string;
-  data: string;
+  data: string | SerializableFile;
   date?: string;
   hash: string;
   author?: string;

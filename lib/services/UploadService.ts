@@ -1,6 +1,6 @@
 import arweave from '@/lib/config/arweave';
 import { generateSHA256 } from '@/utils/sha-256-utils';
-import { HashForm } from '@/types/hashform';
+import { RequestForm } from '@/types/form';
 import { ArweaveService } from './ArweaveService';
 import { EventStreamService } from './EventStreamService';
 import { TransactionUploader } from 'arweave/node/lib/transaction-uploader';
@@ -14,7 +14,7 @@ export class UploadService {
 
   private mine = () => arweave.api.get('mine');
 
-  public async handleUpload(body: HashForm, eventStream: EventStreamService) {
+  public async handleUpload(body: RequestForm, eventStream: EventStreamService) {
     const hash = generateSHA256(body.content);
 
     try {
@@ -38,7 +38,7 @@ export class UploadService {
     }
   }
 
-  private async checkExistingHash(hash: string, body: HashForm, eventStream: EventStreamService): Promise<boolean> {
+  private async checkExistingHash(hash: string, body: RequestForm, eventStream: EventStreamService): Promise<boolean> {
     eventStream.sendProgress(`Verifying if hash #${hash.slice(0, 6)} already exists on blockchain...`, 25);
     const queryResults = await this.arweaveService.searchForHash(hash);
 
@@ -60,7 +60,7 @@ export class UploadService {
     return !!queryResults && queryResults.length > 0;
   }
 
-  private async createTransaction(body: HashForm, hash: string, eventStream: EventStreamService) {
+  private async createTransaction(body: RequestForm, hash: string, eventStream: EventStreamService) {
     eventStream.sendProgress('Starting transaction...', 50);
     
     const results = await this.arweaveService.createTransaction(body, hash);
@@ -85,7 +85,7 @@ export class UploadService {
     }
   }
 
-  private sendSuccessEvent(hash: string, body: HashForm, txId: string, eventStream: EventStreamService) {
+  private sendSuccessEvent(hash: string, body: RequestForm, txId: string, eventStream: EventStreamService) {
     eventStream.sendComplete({
       success: true,
       message: `Hash #${hash.slice(0, 6)} successfully inserted on blockchain.`,

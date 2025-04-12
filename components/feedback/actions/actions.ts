@@ -4,24 +4,50 @@ import { ArweaveService } from "../../../lib/services/ArweaveService";
 import { validateSHA256 } from "@/utils/sha-256-utils";
 import { ResponseType } from "@/types/response";
 import arweave from "../../../lib/config/arweave";
+import { SerializableFile } from "@/types/serializable-file";
+import { Tag } from "@/types/arweave-response";
 
 async function searchForHash(
   hash: string
-): Promise<{ foundValues: any[]; data: any } | undefined> {
+): Promise<
+  { foundValues: any[]; data: string | SerializableFile | null } | undefined
+> {
   try {
     const arwaveSerice = new ArweaveService(arweave);
     const foundValues = await arwaveSerice.searchForHash(hash);
     if (!foundValues || foundValues.length === 0) {
       return { foundValues: [], data: null };
     }
-    const data = await arweave.api.get(`/${foundValues[0].node.id}`);
+
+    const response = await arweave.api.get(`/${foundValues[0].node.id}`, {
+      responseType: "arraybuffer",
+    });
+    const contentType = response.headers.get("content-type");
+
+    if (contentType?.includes("text/plain")) {
+      const textDecoder = new TextDecoder("utf-8");
+      return {
+        foundValues: foundValues,
+        data: textDecoder.decode(response.data) as string
+      }
+    }
+
+    const fileName: Tag = foundValues[0].node.tags.find(
+      (obj: Tag) => obj.name === "File-Name"
+    );
+    console.log(fileName.value);
 
     return {
       foundValues: foundValues,
-      data: data.data,
+      data: {
+        type: contentType,
+        data: Array.from(new Uint8Array(response.data)),
+        name: fileName.value,
+      } as SerializableFile
     };
   } catch (error: any) {
     console.error(error);
+    throw new Error("Error searching for data");
   }
 }
 
@@ -57,7 +83,7 @@ export default async function getFeedback(
       success: true,
       state: "",
       tx_id: txId,
-      data: queryResult?.data,
+      data: queryResult?.data!,
       hash: hashValue,
       date: date,
       author: author,
