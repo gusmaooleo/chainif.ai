@@ -4,6 +4,7 @@ import MainWrapper from "@/components/main";
 import Header from "@/components/header";
 import GradientCanvas from "@/components/canvas/GradientCanvas";
 import "./globals.css";
+import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
   title: "Chainif.AI",
@@ -28,6 +29,7 @@ export default function RootLayout({
           </MainWrapper>
           <Footer />
         </div>
+        <Toaster />
       </body>
     </html>
   );

@@ -1,6 +1,7 @@
 import { SSECompleteEvent, SSEErrorEvent, SSEEvent } from "@/types/sseevent";
+import { IEventStreamService } from "../interfaces/IEventStreamService";
 
-export class EventStreamService {
+export class EventStreamService implements IEventStreamService {
   private controller: ReadableStreamDefaultController;
   private encoder: TextEncoder;
 

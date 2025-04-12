@@ -3,7 +3,6 @@ import { SSEEvent } from "@/types/sseevent";
 import { RequestForm } from "@/types/form";
 
 type ProcessSSEOptions = {
-  onData: (data: SSEEvent) => void;
   onError: (error: Error) => void;
 };
 
@@ -37,8 +36,6 @@ export class ProcessSSEService {
     const data = parseSSEData(lines) as SSEEvent;
 
     if (data === null) return;
-
-    options.onData(data as SSEEvent);
 
     if (data.type === "error" && data.error === 400) {
       options.onError(

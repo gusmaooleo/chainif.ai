@@ -1,21 +1,23 @@
-import { ArweaveCredentials } from "@/types/arweave-credentials";
-import { RequestForm } from "@/types/form";
+import { getTransactionsByHashQuery } from "../graphql/getTransactionByHash";
 import { TransactionUploader } from "arweave/node/lib/transaction-uploader";
+import { ArweaveCredentials } from "@/types/arweave-credentials";
+import { IArweaveService } from "../interfaces/IAreaveService";
 import { RequestFormSchema } from "../validation/hashform";
 import Transaction from "arweave/node/lib/transaction";
+import { RequestForm } from "@/types/form";
 import Arweave from "arweave";
-import { getTransactionsByHashQuery } from "../graphql/getTransactionByHash";
 
 declare global {
   var arweaveKey: any;
   var publicKey: any;
 }
 
-export class ArweaveService {
+export class ArweaveService implements IArweaveService {
   constructor(private instance: Arweave) {}
 
   /**
    * Get Arweave key and public key by the environment "dev" || "test" != "prod".
+   * @readonly
    * @param instance
    * @returns
    */

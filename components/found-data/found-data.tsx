@@ -1,11 +1,10 @@
 import { SSEEvent } from "@/types/sseevent";
-import { FoundFeedback } from "../feedback/feedback-states";
-import NftInfo from "./nft-info";
-import ChecksumInfo from "./checksum-info";
-import AuthorInfo from "./author-info";
-import DateInfo from "./date-info";
+import { FoundFeedback } from "../feedback/feedback-states/found";
+import NftInfo from "./ui-elements/nft-info";
+import ChecksumInfo from "./ui-elements/checksum-info";
+import AuthorInfo from "./ui-elements/author-info";
+import DateInfo from "./ui-elements/date-info";
 import DataInfo from "./data-info";
-import { notFound } from "next/navigation";
 
 export default function FoundData({ data }: { data: SSEEvent | null }) {
   if (data && data.type === 'complete') {
@@ -28,5 +27,5 @@ export default function FoundData({ data }: { data: SSEEvent | null }) {
     );
   }
 
-  notFound();
+  console.log(data);
 }

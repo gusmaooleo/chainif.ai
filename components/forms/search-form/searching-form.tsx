@@ -11,35 +11,44 @@ import { SearchInput } from "./assets/search-input";
 import { SearchButton } from "./assets/search-button";
 import { FileUploadSection } from "./assets/file-upload-section";
 import { buildSerializableFile } from "@/utils/file-int8array-utils";
+import { toast } from "sonner";
 
 export default function SearchingForm() {
   const router = useRouter();
   const { hash } = useParams();
   const dispatch = useDispatch();
-  
-  const { inputValue, fileInputValue } = useSelector((state: RootState) => state.form);
+
+  const { inputValue, fileInputValue } = useSelector(
+    (state: RootState) => state.form
+  );
   const isValidHash = useMemo(() => validateSHA256(inputValue), [inputValue]);
 
-  const onDrop = useCallback(async (acceptedFiles: File[]) => {
-    if (acceptedFiles.length > 0) {
-      const serializableFile = await buildSerializableFile(acceptedFiles[0]);
-      dispatch(setFileInputValue(serializableFile));
-      dispatch(setInputValue(""));
-    }
-  }, [dispatch]);
+  const onDrop = useCallback(
+    async (acceptedFiles: File[]) => {
+      if (acceptedFiles.length > 0) {
+        const serializableFile = await buildSerializableFile(acceptedFiles[0]);
+        dispatch(setFileInputValue(serializableFile));
+        dispatch(setInputValue(""));
+      }
+    },
+    [dispatch]
+  );
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
     maxFiles: 1,
     accept: {
-      'application/pdf': ['.pdf'],
-      'image/*': ['.png', '.jpg', '.jpeg' ,'.svg']
+      "application/pdf": [".pdf"],
+      "image/*": [".png", ".jpg", ".jpeg", ".svg", ".gif"],
+      "text/*": [".html"],
     },
     maxSize: 5 * (1024 * 1024), //5mb
     onDropRejected: () => {
-      // TODO: implement toast
-      console.log("File is too large")
-    }
+      toast.error("Error: The file is very large, enter less than 5 mb", {
+        position: "top-right",
+        style: { backgroundColor: "#FF6568", color: "#fdfdfd" },
+      });
+    },
   });
 
   const clearAllFiles = useCallback(() => {
@@ -59,13 +68,15 @@ export default function SearchingForm() {
   const handleSubmit = useCallback(
     async (e: FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-      
+
       if (!inputValue && !fileInputValue) return;
       if (hash && inputValue === hash[0]) return;
 
-      const hashToUse = fileInputValue 
+      const hashToUse = fileInputValue
         ? generateSHA256(fileInputValue)
-        : isValidHash ? inputValue : generateSHA256(inputValue);
+        : isValidHash
+        ? inputValue
+        : generateSHA256(inputValue);
 
       router.push(`/${hashToUse}`);
     },

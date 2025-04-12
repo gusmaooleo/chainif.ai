@@ -1,39 +1,25 @@
-import FoundDataElement from "./found-data-elements";
-import { CopyButton } from "../ui-elements/copy-button";
 import { SerializableFile } from "@/types/serializable-file";
-import Image from "next/image";
+import { TextDataViewer } from "./found-data-types/text-data-viewer";
+import { ImageDataViewer } from "./found-data-types/image-data-viewer";
+import { PdfDataViewer } from "./found-data-types/pdf-data-viewer";
+import { HtmlDataViewer } from "./found-data-types/html-data-viewer";
 
 export default function DataInfo({ data }: { data: string | SerializableFile }) {
   if (typeof data === 'string') {
-    return (
-      <FoundDataElement classname="md:w-full" title="Data:">
-        <div className="bg-gray-200 max-h-[40rem] w-full md:w-[46vmin] rounded-lg p-4 text-sm relative border border-gray-300">
-          <CopyButton textToCopy={data} className="absolute top-1 right-1" />
-          <div className="font-[Fira_Code] h-[calc(100%)] overflow-auto">
-            <pre className="whitespace-pre-wrap m-0">{data}</pre>
-          </div>
-        </div>
-      </FoundDataElement>
-    );
+    return <TextDataViewer data={data} />;
   }
 
-  const convertImage = (): string => {
-    const intArray = new Uint8Array(data.data);
-    const blob = new Blob([intArray], {type: data.type});
-    const url = URL.createObjectURL(blob);
-    return url;
-  }
-
-  if (data.type.includes("image/")) {
-    return (
-      <>
-        <Image 
-          src={convertImage()}
-          alt="imagem"
-          width={500}
-          height={100}
-        />
-      </>
-    )
+  switch (true) {
+    case data.type.includes("image/"):
+      return <ImageDataViewer file={data} />;
+    
+    case data.type.includes("application/pdf"):
+      return <PdfDataViewer file={data} />;
+    
+    case data.type.includes("text/html"):
+      return <HtmlDataViewer file={data} />;
+    
+    default:
+      return <TextDataViewer data={new TextDecoder().decode(new Uint8Array(data.data))} />;
   }
 }

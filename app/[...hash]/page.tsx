@@ -3,7 +3,7 @@ import SearchingForm from "@/components/forms/search-form/searching-form";
 import FormProviderWrapper from "@/components/wrappers/form-provider-wrapper";
 import ContentWrapper from "@/components/wrappers/content-wrapper";
 import FeedbackContent from "@/components/feedback/feedback-content";
-import { DefaultFeedback } from "@/components/feedback/feedback-states";
+import { DefaultFeedback } from "@/components/feedback/feedback-states/default";
 import { notFound } from "next/navigation";
 
 type DynamicHashPageType = {

@@ -21,6 +21,16 @@
   --color-error: #FF6568;
 }
 
+.html-content {
+  all: initial; /* Reseta TODAS as propriedades */
+  
+  /* Permite que elementos internos tenham seus estilos normais */
+  & * {
+    all: unset; /* Remove heranças indesejadas */
+    display: revert; /* Volta ao display padrão de cada elemento */
+  }
+}
+
 body {
   font-family: 'Helvetica Rounded';
 }

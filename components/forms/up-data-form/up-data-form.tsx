@@ -16,7 +16,7 @@ import { Button } from "../../ui/button";
 import { FormEvent } from "react";
 import { optionsList } from "@/lib/constants/originOptions";
 import { generateSHA256 } from "@/utils/sha-256-utils";
-import { setSSEEvent } from "@/lib/slices/sse-slice";
+import { clearSSEEvent, setSSEEvent } from "@/lib/slices/sse-slice";
 import FormContent from "./assets/form-content";
 import { ProcessSSEService } from "@/lib/services/ProcessSSEService";
 
@@ -39,20 +39,14 @@ export default function UpDataForm({ children }: React.PropsWithChildren) {
       await ProcessSSEService.uploadContent(
         { content, author },
         {
-          onData: (data) => dispatch(setSSEEvent({ ...data })),
           onError: (error) => {
-            dispatch(
-              setSSEEvent({
-                type: "error",
-                message: error.message,
-              })
-            );
             throw error;
           },
         }
       );
       
-      dispatch(setFeedbackValue("Found"));
+      dispatch(clearSSEEvent());
+      dispatch(setFeedbackValue("Sent-To-Chain"));
     } catch (error: any) {
       dispatch(
         setSSEEvent({

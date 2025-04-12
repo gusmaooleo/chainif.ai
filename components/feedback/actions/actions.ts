@@ -7,6 +7,7 @@ import arweave from "../../../lib/config/arweave";
 import { SerializableFile } from "@/types/serializable-file";
 import { Tag } from "@/types/arweave-response";
 
+// TODO: improve this.
 async function searchForHash(
   hash: string
 ): Promise<
@@ -35,7 +36,6 @@ async function searchForHash(
     const fileName: Tag = foundValues[0].node.tags.find(
       (obj: Tag) => obj.name === "File-Name"
     );
-    console.log(fileName.value);
 
     return {
       foundValues: foundValues,
@@ -47,7 +47,7 @@ async function searchForHash(
     };
   } catch (error: any) {
     console.error(error);
-    throw new Error("Error searching for data");
+    throw new Error("Error when searching for transaction data");
   }
 }
 
