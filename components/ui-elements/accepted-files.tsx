@@ -6,6 +6,7 @@ import { faFilePdf } from "@fortawesome/free-solid-svg-icons/faFilePdf";
 import { faFileLines } from "@fortawesome/free-solid-svg-icons/faFileLines";
 import { faFileCode } from "@fortawesome/free-solid-svg-icons/faFileCode";
 import { faCircleXmark } from "@fortawesome/free-solid-svg-icons/faCircleXmark";
+import { faFileImage } from "@fortawesome/free-solid-svg-icons/faFileImage";
 import {
   Tooltip,
   TooltipContent,
@@ -32,6 +33,18 @@ export default function AcceptedFiles({
       break;
     case SupportedMimeTypes.TEXT:
       icon = faFileLines;
+      break;
+    case SupportedMimeTypes.PNG:
+      icon = faFileImage;
+      break;  
+    case SupportedMimeTypes.JPEG:
+      icon = faFileImage;
+      break;
+    case SupportedMimeTypes.SVG:
+      icon = faFileImage;
+      break;
+    case SupportedMimeTypes.GIF:
+      icon = faFileImage;
       break;
     default:
       icon = faFile;
