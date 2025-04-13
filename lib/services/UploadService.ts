@@ -125,17 +125,7 @@ export class UploadService implements IUploadService {
     body: RequestForm,
     txId: string,
     eventStream: IEventStreamService
-  ) {    
-    eventStream.sendComplete({
-      success: true,
-      message: `Hash #${hash.slice(0, 6)} successfully inserted on blockchain.`,
-      state: "",
-      data: "wait for the transaction to be mined",
-      date: new Date().toISOString(),
-      hash: hash,
-      author: body.author,
-      tx_id: txId,
-    });
+  ) {
     await redis.set(`hash:${hash}`, TransactionValidationTypes.Pending, { ex: 7200 });
   }
 

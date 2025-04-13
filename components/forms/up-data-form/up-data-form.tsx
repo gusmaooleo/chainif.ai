@@ -39,6 +39,7 @@ export default function UpDataForm({ children }: React.PropsWithChildren) {
       await ProcessSSEService.uploadContent(
         { content, author },
         {
+          onData: (data) => dispatch(setSSEEvent({ ...data })),
           onError: (error) => {
             throw error;
           },
