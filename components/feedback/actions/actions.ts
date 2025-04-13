@@ -54,6 +54,8 @@ async function searchForHash(
 export default async function getFeedback(
   hashValue: string
 ): Promise<ResponseType> {
+  const txStatus = await fetch(`/api/check-tx-status?hash=${encodeURIComponent(hashValue)}`);
+
   if (!validateSHA256(hashValue)) return { feedback: "Invalid" };
 
   const queryResult = await searchForHash(hashValue);
