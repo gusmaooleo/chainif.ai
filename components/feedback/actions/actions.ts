@@ -6,6 +6,7 @@ import { ResponseType } from "@/types/response";
 import arweave from "../../../lib/config/arweave";
 import { SerializableFile } from "@/types/serializable-file";
 import { Tag } from "@/types/arweave-response";
+import redis from "@/lib/config/redis";
 
 // TODO: improve this.
 async function searchForHash(
@@ -54,7 +55,11 @@ async function searchForHash(
 export default async function getFeedback(
   hashValue: string
 ): Promise<ResponseType> {
-  const txStatus = await fetch(`/api/check-tx-status?hash=${encodeURIComponent(hashValue)}`);
+  const transactionOnCache = await redis.get(`hash:${hashValue}`)
+
+  if (transactionOnCache) {
+    return { feedback: 'Sent-To-Chain' };
+  }
 
   if (!validateSHA256(hashValue)) return { feedback: "Invalid" };
 

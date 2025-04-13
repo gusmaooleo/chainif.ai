@@ -32,6 +32,7 @@ function NftImageContainer({
   const handleDownload = async () => {
     try {
       const response = await fetch(svgUrl);
+      console.log(response);
       const svgString = await response.text();
       
       const blob = new Blob([svgString], { type: 'image/svg+xml' });

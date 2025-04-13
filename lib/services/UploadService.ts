@@ -5,6 +5,8 @@ import { ArweaveService } from "./ArweaveService";
 import { TransactionUploader } from "arweave/node/lib/transaction-uploader";
 import { IUploadService } from "../interfaces/IUploadService";
 import { IEventStreamService } from "../interfaces/IEventStreamService";
+import { TransactionValidationTypes } from "@/types/transaction-validation-states";
+import redis from "../config/redis";
 
 export class UploadService implements IUploadService {
   private arweaveService: ArweaveService;
@@ -118,12 +120,13 @@ export class UploadService implements IUploadService {
     }
   }
 
-  private sendSuccessEvent(
+  private async sendSuccessEvent(
     hash: string,
     body: RequestForm,
     txId: string,
     eventStream: IEventStreamService
   ) {
+    await redis.set(`hash:${hash}`, TransactionValidationTypes.Pending, { ex: 7200 });
     eventStream.sendComplete({
       success: true,
       message: `Hash #${hash.slice(0, 6)} successfully inserted on blockchain.`,
