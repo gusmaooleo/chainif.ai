@@ -1,7 +1,7 @@
 'use client';
 
 import { validateSHA256 } from "@/utils/sha-256-utils";
-import { RootState } from "@/utils/store";
+import { RootState } from "@/lib/config/store";
 import { useSelector } from "react-redux";
 
 export default function ShowEquivalentHash({hashValue}: {hashValue: string}) {

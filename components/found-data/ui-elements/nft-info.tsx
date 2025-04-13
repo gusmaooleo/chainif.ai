@@ -1,4 +1,4 @@
-import NftByHash from "../ui-elements/nft-by-hash";
+import NftByHash from "../../ui-elements/nft-by-hash";
 import FoundDataElement from "./found-data-elements";
 
 export default function NftInfo({hash}: {hash: string}) {

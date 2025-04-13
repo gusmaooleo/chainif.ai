@@ -1,9 +1,9 @@
 import ShowEquivalentHash from "@/components/ui-elements/show-equivalent-hash";
-import SearchingForm from "@/components/forms/searching-form";
+import SearchingForm from "@/components/forms/search-form/searching-form";
 import FormProviderWrapper from "@/components/wrappers/form-provider-wrapper";
 import ContentWrapper from "@/components/wrappers/content-wrapper";
 import FeedbackContent from "@/components/feedback/feedback-content";
-import { DefaultFeedback } from "@/components/feedback/feedback-states";
+import { DefaultFeedback } from "@/components/feedback/feedback-states/default";
 import { notFound } from "next/navigation";
 
 type DynamicHashPageType = {
@@ -20,6 +20,7 @@ export default async function DynamicHashPage({ params }: DynamicHashPageType) {
 
   return (
     <div className="flex flex-col h-auto items-center justify-evenly">
+      {/* Keeps SEO advantages. */}
       {!hashValue && (
         <ContentWrapper classname_f="w-[30rem]">
           <DefaultFeedback />

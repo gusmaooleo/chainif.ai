@@ -1,4 +1,4 @@
-import { CopyButton } from "../ui-elements/copy-button";
+import { CopyButton } from "../../ui-elements/copy-button";
 import FoundDataElement from "./found-data-elements";
 
 export default function ChecksumInfo({ hash }: { hash: string }) {

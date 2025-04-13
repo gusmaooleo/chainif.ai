@@ -1,7 +1,7 @@
 import { Input } from "@/components/ui/input";
 import { optionsList } from "@/lib/constants/originOptions";
 import { setAuthorValue } from "@/lib/slices/form-slice";
-import { RootState } from "@/utils/store";
+import { RootState } from "@/lib/config/store";
 import { useDispatch, useSelector } from "react-redux";
 
 const AuthorInput = () => {

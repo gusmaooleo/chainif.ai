@@ -1,1 +1,1 @@
-export type FeedbackType = 'Found' | 'Invalid' | 'Not-Found' | 'Fetching' | 'Default' | 'Error';
+export type FeedbackType = 'Found' | 'Invalid' | 'Not-Found' | 'Fetching' | 'Default' | 'Error' | 'Sent-To-Chain';

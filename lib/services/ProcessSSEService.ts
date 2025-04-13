@@ -1,13 +1,8 @@
 import { parseSSEData } from "@/utils/parse-ssedata";
 import { SSEEvent } from "@/types/sseevent";
-
-type UploadParams = {
-  content: string;
-  author: string;
-};
+import { RequestForm } from "@/types/form";
 
 type ProcessSSEOptions = {
-  onData: (data: SSEEvent) => void;
   onError: (error: Error) => void;
 };
 
@@ -40,7 +35,7 @@ export class ProcessSSEService {
     const lines = event.split("\n");
     const data = parseSSEData(lines) as SSEEvent;
 
-    options.onData(data);
+    if (data === null) return;
 
     if (data.type === "error" && data.error === 400) {
       options.onError(
@@ -52,7 +47,7 @@ export class ProcessSSEService {
   }
 
   static async uploadContent(
-    { content, author }: UploadParams,
+    { content, author }: RequestForm,
     options: ProcessSSEOptions
   ) {
     const response = await fetch("/api/upload", {

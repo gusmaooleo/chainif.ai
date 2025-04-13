@@ -3,16 +3,15 @@
 import { useCallback, useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import getFeedback from "./actions/actions";
-import { RootState } from "@/utils/store";
+import { RootState } from "@/lib/config/store";
 import { setFeedbackValue } from "@/lib/slices/form-slice";
 import DefaultLoading from "../loading/default-loading";
-import {
-  ErrorFeedback,
-  InvalidFeedback,
-  NotFoundFeedback,
-} from "./feedback-states";
+import { ErrorFeedback } from "./feedback-states/error";
+import { InvalidFeedback } from "./feedback-states/invalid";
+import { NotFoundFeedback } from "./feedback-states/not-found";
 import { setSSEEvent } from "@/lib/slices/sse-slice";
 import FoundData from "../found-data/found-data";
+import SentToChain from "./feedback-states/sent-to-chain";
 
 export default function FeedbackContent({ hashValue }: { hashValue: string }) {
   const { feedbackValue } = useSelector((state: RootState) => state.form);
@@ -78,6 +77,8 @@ export default function FeedbackContent({ hashValue }: { hashValue: string }) {
           return <ErrorFeedback error={eventData?.message} />;
         }
         return <ErrorFeedback error="Unknown errror."/>
+      case "Sent-To-Chain":
+        return <SentToChain hash={hashValue} />
       default:
         return null;
     }

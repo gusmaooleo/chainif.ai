@@ -10,9 +10,9 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "../../ui/button";
+import { Button } from "../../../ui/button";
 import { optionsList } from "@/lib/constants/originOptions";
-import { RootState } from "@/utils/store";
+import { RootState } from "@/lib/config/store";
 import DropdownMenuItems from "./dropdown-items";
 
 type OriginDropdownSelectorType = {

@@ -1,10 +1,11 @@
 import { NextResponse } from 'next/server';
-import { HashForm } from '@/types/hashform';
+import { RequestForm } from '@/types/form';
 import { UploadService } from '@/lib/services/UploadService';
 import { EventStreamService } from '@/lib/services/EventStreamService';
 
 export async function POST(request: Request) {
-  const body: HashForm = await request.json();
+  const body: RequestForm = await request.json();
+  
   if (!body.content) {
     return new NextResponse('Content is required', { status: 400 });
   }
