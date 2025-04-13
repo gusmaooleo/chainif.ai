@@ -6,32 +6,32 @@ import {
 
 export interface IEventStreamService {
   /**
-   * Envia um evento genérico pelo stream
-   * @param event O evento a ser enviado
+   * Send a generic event on stream
+   * @param event O evento to be sent
    */
   sendEvent(event: SSEEvent): void;
 
   /**
-   * Envia um evento de progresso
-   * @param state Estado atual do processo
-   * @param progress Progresso atual (0-100)
+   * Send a event progress
+   * @param state Current process state
+   * @param progress (0-100)
    */
   sendProgress(state: string, progress: number): void;
 
   /**
-   * Envia um evento de conclusão
-   * @param data Dados do evento (sem o tipo)
+   * Send a conclusion event
+   * @param data Event data
    */
   sendComplete(data: Omit<SSECompleteEvent, 'type'>): void;
 
   /**
-   * Envia um evento de erro
-   * @param data Dados do erro (sem o tipo)
+   * Throws an error event
+   * @param data Error data
    */
   sendError(data: Omit<SSEErrorEvent, 'type'>): void;
 
   /**
-   * Fecha o stream de eventos
+   * Close stream event
    */
   close(): void;
 }
